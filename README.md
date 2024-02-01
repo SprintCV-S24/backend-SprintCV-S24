@@ -1,45 +1,14 @@
-# Express API Starter with Typescript
+## Back-end Repo
 
-How to use this template:
+# What is the project?
 
-Includes API Server utilities:
+This project is a user-friendly web application that simplifies the process of creating resume bullet points for job and internship seekers. This system will be engineered to analyze and synthesize information from an individual's resume alongside specific job descriptions. By doing so, it will generate customized, relevant bullet points that accurately reflect the candidate's qualifications and experiences in relation to the job requirements. This process will be streamlined to ensure ease of use, eliminating the time-consuming task of manual comparison between multiple documents. The goal is to enhance the efficiency and effectiveness of resume building, providing a seamless experience for users to tailor their resumes for specific job applications.
 
-* [morgan](https://www.npmjs.com/package/morgan)
-  * HTTP request logger middleware for node.js
-* [helmet](https://www.npmjs.com/package/helmet)
-  * Helmet helps you secure your Express apps by setting various HTTP headers. It's not a silver bullet, but it can help!
-* [dotenv](https://www.npmjs.com/package/dotenv)
-  * Dotenv is a zero-dependency module that loads environment variables from a `.env` file into `process.env`
-* [cors](https://www.npmjs.com/package/cors)
-  * CORS is a node.js package for providing a Connect/Express middleware that can be used to enable CORS with various options.
+# Who is the project for?
+The target audience for our website is active job seekers. This includes college students, experienced professionals, and career-switchers. We are especially targeting users who are applying for a large number of jobs who can benefit from time savings in optimizing their resume for each position.
 
-Development utilities:
+# What problem does it solve?
+It significantly streamlines the resume tailoring process, saving a considerable amount of time and potentially safeguarding your professional trajectory. Currently, applicants spend significant amounts of time adjusting their resumes for different careers paths, particularly college students. With our application, the process of modifying and saving different resumes will be more centralized and streamlined.
 
-* [typescript](https://www.npmjs.com/package/typescript)
-  * TypeScript is a language for application-scale JavaScript.
-* [ts-node](https://www.npmjs.com/package/ts-node)
-  * TypeScript execution and REPL for node.js, with source map and native ESM support.
-* [nodemon](https://www.npmjs.com/package/nodemon)
-  * nodemon is a tool that helps develop node.js based applications by automatically restarting the node application when file changes in the directory are detected.
-* [eslint](https://www.npmjs.com/package/eslint)
-  * ESLint is a tool for identifying and reporting on patterns found in ECMAScript/JavaScript code.
-* [typescript-eslint](https://typescript-eslint.io/)
-  * Tooling which enables ESLint to support TypeScript.
-
-## Setup
-
-```
-npm install
-```
-
-## Lint
-
-```
-npm run lint
-```
-
-## Development
-
-```
-npm run dev
-```
+# What languages/toolkits are used for development?
+For our frontend, we are using React, because it is widely supported and has a wealth of resources from which we can benefit. In the spirit of not recreating things that already exist, we can take advantage of the many libraries built for React to accomplish common tasks such as routing and form validation. Additionally, React is the frontend framework that our team is most familiar with. For our backend, we are using NodeJS and Express. Our team is already familiar with Node, so the ramp up process will be faster compared to other backend options. We also believe that our productivity will improve by using the same language in the frontend and backend, hopefully leading to more cohesion between frontend and backend, easier readability for the team, and a better sense of whole-code ownership. Additionally, we are coding both the frontend and backend in Typescript. By incorporating more rigorous type checking into our project, we can avoid errors and more easily promote a single source of truth for interfaces. This can help us avoid miscommunication between team members and hard-to-debug issues. For authentication, we are using Firebase auth, which works out of the box. This fits with the philosophy of not reinventing things that already exist. By using a service that handles authentication and is already battle-tested, we make sure that our application and our users’ data stays secure.We chose Firebase because we have some experience using the service in past projects. For our database, we are using MongoDB. Mongo is widely used and has a large volume of supporting documentation. It also has a generous free tier which we can stay within. We chose to use a NoSQL database because we anticipate some evolution of our project’s requirements, and we expect that NoSQL will make it easier to quickly iterate and handle change. Additionally, we have experience using Mongo and Mongoose in past projects. We are Vercel and Github Actions for CICD tooling. Vercel comes with a Github bot which automatically builds all pull requests and reports errors. We are following the XP principle of continually deploying, and Vercel should streamline this process, decreasing the time sink of learning complicating CICD tooling. We are also using Github Actions for automated testing, in order to block pull requests from merging until they pass tests.
