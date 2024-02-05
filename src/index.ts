@@ -6,6 +6,7 @@ import helmet from "helmet";
 import { exampleRoute } from "./routes/exampleRoute";
 import { verifyToken } from "./middlewares/verifyToken";
 import { notFound, errorHandler } from "./middlewares/errors";
+import { connectDb } from "./utils/mongodb";
 
 dotenv.config();
 
@@ -35,5 +36,6 @@ app.use(notFound);
 app.use(errorHandler);
 
 app.listen(PORT, () => {
+  connectDb();
   console.log(`Server is running on port ${PORT}`);
 });
