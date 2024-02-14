@@ -2,7 +2,7 @@
 // Splits the authorization header ("Bearer <token>")
 // into an array and takes the second element, which is the token
 import { type Request, type Response, type NextFunction } from "express";
-import { auth } from "../../config/firebase-config";
+import { auth } from "../config/firebase-config";
 
 export const verifyToken = async (
   req: Request,

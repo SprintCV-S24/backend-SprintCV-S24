@@ -2,5 +2,4 @@
 dist/
 */node_modules/
 *.env
-config/serviceAccountKey.json
 node_modules
