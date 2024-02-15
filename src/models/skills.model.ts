@@ -6,8 +6,6 @@ const Schema = mongoose.Schema;
 export interface SkillsType extends mongoose.Document {
   title: string;
   description: string;
-  id: string;
-  s3FileId: string;
 }
 
 // Skills Schema

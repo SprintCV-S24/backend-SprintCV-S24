@@ -5,7 +5,6 @@ const Schema = mongoose.Schema;
 // Interface for Contact details document
 export interface HeadingType extends mongoose.Document {
   name: string;
-  id: string;
   phoneNumber: string;
   email: string;
   linkedIn: string;
