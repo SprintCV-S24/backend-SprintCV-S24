@@ -24,4 +24,4 @@ const Activities = new Schema<ActivitiesType>({
   location: { type: String, required: true },
 });
 
-export { Activities };
+export const ActivitiesModel = mongoose.model("Activities", Activities);

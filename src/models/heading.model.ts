@@ -21,4 +21,4 @@ const Heading = new Schema<HeadingType>({
   websitesGitHub: { type: String, required: true },
 });
 
-export { Heading };
+export const HeadingModel = mongoose.model("Heading", Heading);

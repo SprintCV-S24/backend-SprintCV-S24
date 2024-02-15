@@ -16,4 +16,4 @@ const Project = new Schema<ProjectType>({
   year: { type: String, required: true },
 });
 
-export { Project };
+export const ProjectModel = mongoose.model("Project", Project);

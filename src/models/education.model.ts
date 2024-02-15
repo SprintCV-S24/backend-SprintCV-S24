@@ -20,4 +20,4 @@ const Education = new Schema<EducationType>({
   year: { type: String, required: true },
 });
 
-export { Education };
+export const EducationModel = mongoose.model("Education", Education);

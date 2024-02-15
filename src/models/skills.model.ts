@@ -16,4 +16,4 @@ const Skills = new Schema<SkillsType>({
   description: { type: String, required: true },
 });
 
-export { Skills };
+export const SkillsModel = mongoose.model("Skills", Skills);

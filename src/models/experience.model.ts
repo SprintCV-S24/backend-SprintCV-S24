@@ -22,4 +22,4 @@ const Experience = new Schema<experienceType>({
   location: { type: String, required: true },
 });
 
-export { Experience };
+export const ExperienceModel = mongoose.model("Experience", Experience);
