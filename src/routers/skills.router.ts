@@ -10,7 +10,7 @@ skillsRouter.post(
   async (req: Request<any, any, SkillsType>, res: Response) => {
     try {
       const skills = await createSkills(req.body);
-      res.status(HttpStatus.OK).json(event);
+      res.status(HttpStatus.OK).json(skills);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
         res.status(err.errorCode).json({ error: err.message });
