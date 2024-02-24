@@ -4,12 +4,14 @@ const Schema = mongoose.Schema;
 
 // Interface for Skills document
 export interface SkillsType extends mongoose.Document {
+	userId: string;
   title: string;
   description: string;
 }
 
 // Skills Schema
 const Skills = new Schema<SkillsType>({
+	userId: { type: String, required: true },
   title: { type: String, required: true },
   description: { type: String, required: true },
 });
