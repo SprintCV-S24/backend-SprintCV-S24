@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 // Interface for Activities document
 export interface ActivitiesType extends mongoose.Document {
-	userId: string;
+	user: string;
 	itemName: string;
   bullets: string[];
   title: string;
@@ -15,7 +15,7 @@ export interface ActivitiesType extends mongoose.Document {
 
 // Activities Schema
 const Activities = new Schema<ActivitiesType>({
-	userId: { type: String, required: true },
+	user: { type: String, required: true },
 	itemName: { type: String, required: true },
   bullets: { type: [String], required: true },
   title: { type: String, required: true },

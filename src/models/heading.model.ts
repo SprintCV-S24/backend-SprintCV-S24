@@ -9,7 +9,7 @@ interface HeadingItem {
 
 // Interface for Contact details document
 export interface HeadingType extends mongoose.Document {
-	userId: string;
+	user: string;
 	itemName: string;
   name: string;
   items: HeadingItem[];
@@ -26,7 +26,7 @@ const headingItemSchema = new Schema<HeadingItem>(
 
 // Schema for HeadingType which includes HeadingItem
 const Heading = new Schema<HeadingType>({
-	userId: { type: String, required: true },
+	user: { type: String, required: true },
 	itemName: { type: String, required: true },
   name: { type: String, required: true },
   items: [headingItemSchema],

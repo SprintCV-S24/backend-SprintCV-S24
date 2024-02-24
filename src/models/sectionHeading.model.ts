@@ -4,14 +4,14 @@ const Schema = mongoose.Schema;
 
 // Interface for Section Heading document
 export interface SectionHeadingType extends mongoose.Document {
-	userId: string;
+	user: string;
 	itemName: string;
   title: string;
 }
 
 // Section Heading Schema
 const SectionHeading = new Schema<SectionHeadingType>({
-	userId: { type: String, required: true },
+	user: { type: String, required: true },
 	itemName: { type: String, required: true },
   title: { type: String, required: true },
 });
