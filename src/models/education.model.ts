@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 // Interface for Education document
 export interface EducationType extends mongoose.Document {
-  description: string;
+  bullets: string[];
   title: string;
   subtitle: string;
   location: string;
@@ -13,7 +13,7 @@ export interface EducationType extends mongoose.Document {
 
 // Education Schema
 const Education = new Schema<EducationType>({
-  description: { type: String, required: true },
+  bullets: { type: [String], required: true },
   title: { type: String, required: true },
   subtitle: { type: String, required: true },
   location: { type: String, required: true },
