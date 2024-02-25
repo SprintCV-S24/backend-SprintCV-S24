@@ -5,6 +5,7 @@ import { type SkillsType } from "../models/skills.model";
 
 export const skillsRouter = Router();
 
+//Note that the user field (which is part of skillsType) in body is automatically populated by verifyToken middleware
 skillsRouter.post(
   "/",
   async (req: Request<any, any, SkillsType>, res: Response) => {

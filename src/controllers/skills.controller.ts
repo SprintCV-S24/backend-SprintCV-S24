@@ -1,8 +1,16 @@
 import { SkillsModel, type SkillsType } from "../models/skills.model";
 import { HttpError, HttpStatus, checkMongooseErrors } from "../utils/errors";
+import { checkDuplicateItemName } from "../utils/checkDuplicates";
 
 export const createSkills = async (skillsFields: SkillsType) => {
   try {
+		if(await checkDuplicateItemName(skillsFields.itemName)){
+			throw new HttpError(
+				HttpStatus.BAD_REQUEST,
+				"Duplicate item name",
+			)
+		}
+
     const newSkills = new SkillsModel(skillsFields);
     await newSkills.save();
     return newSkills;
@@ -15,7 +23,7 @@ export const createSkills = async (skillsFields: SkillsType) => {
 
     throw new HttpError(
       HttpStatus.INTERNAL_SERVER_ERROR,
-      "Event creation failed",
+      "Skill creation failed",
       { cause: err },
     );
   }
