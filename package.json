@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon src/index.ts",
     "build": "tsc",
-    "test": "vitest",
+    "test": "vitest run",
     "lint": "eslint --ext .ts . --fix",
     "typecheck": "tsc --noEmit"
   },
