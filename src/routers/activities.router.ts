@@ -1,5 +1,5 @@
 import { Router, type Request, type Response } from "express";
-import { createActivities } from "../controllers/activities.controller";
+import { createActivity } from "../controllers/activities.controller";
 import { HttpError, HttpStatus } from "../utils/errors";
 import { type ActivitiesType } from "../models/activities.model";
 
@@ -10,7 +10,7 @@ activitiesRouter.post(
   "/",
   async (req: Request<any, any, ActivitiesType>, res: Response) => {
     try {
-      const activities = await createActivities(req.body);
+      const activities = await createActivity(req.body);
       res.status(HttpStatus.OK).json(activities);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
