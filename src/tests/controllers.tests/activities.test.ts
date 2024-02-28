@@ -1,5 +1,5 @@
 import { dbConnect, dbDisconnect } from "../dbHandler";
-import { ActivitiesType } from "../../models/activities.model";
+import { type ActivitiesType } from "../../models/activities.model";
 import { activityDummyData1 } from "./dummyData";
 import {
   createActivity,

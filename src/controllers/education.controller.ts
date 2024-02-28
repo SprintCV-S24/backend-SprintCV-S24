@@ -46,7 +46,7 @@ export const getAllEducation = async (user: string) => {
   }
 };
 
-export const getActivityById = async (user: string, educationId: string) => {
+export const getEducationById = async (user: string, educationId: string) => {
   try {
     const education = await EducationModel.findOne({
       user: user,
@@ -86,12 +86,12 @@ export const updateEducation = async (
       throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
     }
 
-    const updatedActivity = await EducationModel.findOneAndUpdate(
+    const updatedEducation = await EducationModel.findOneAndUpdate(
       { _id: educationId, user: user }, // Query to match the document by _id and user
       { $set: educationFields }, // Update operation
       { new: true, runValidators: true }, // Options: return the updated document and run schema validators
     );
-    return updatedActivity;
+    return updatedEducation;
   } catch (err: unknown) {
     //rethrow any errors as HttpErrors
     if (err instanceof HttpError) {
