@@ -7,7 +7,7 @@ import { ProjectModel } from "../models/project.model";
 import { SectionHeadingModel } from "../models/sectionHeading.model";
 import { SkillsModel } from "../models/skills.model";
 
-export const checkDuplicateItemName = async (value: string): Promise<boolean> => {
+export const checkDuplicateItemName = async (value: string, excludedId: string | null = null): Promise<boolean> => {
   const field = "itemName";
   const models = [
     ActivitiesModel,
@@ -21,7 +21,7 @@ export const checkDuplicateItemName = async (value: string): Promise<boolean> =>
 
   // Check each model for the count of documents with the specified itemName value
   const checks = models.map((model) =>
-    model.countDocuments({ [field]: value }).exec(),
+    model.countDocuments({ [field]: value, '_id': { $ne: excludedId } }).exec(),
   );
 
   // Await all checks to resolve

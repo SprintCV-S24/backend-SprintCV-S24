@@ -85,7 +85,7 @@ export const updateActivity = async (
       );
     }
 
-		if (await checkDuplicateItemName(activitiesFields.itemName)) {
+		if (await checkDuplicateItemName(activitiesFields.itemName, activityId)) {
       throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
     }
 
