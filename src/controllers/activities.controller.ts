@@ -51,11 +51,11 @@ export const getAllActivities = async (user: string) => {
 
 export const getActivityById = async (user: string, activityId: string) => {
   try {
-    const activities = await ActivitiesModel.findOne({
+    const activity = await ActivitiesModel.findOne({
       user: user,
       _id: activityId,
     });
-    return activities;
+    return activity;
   } catch (err: unknown) {
     //rethrow any errors as HttpErrors
     if (err instanceof HttpError) {
