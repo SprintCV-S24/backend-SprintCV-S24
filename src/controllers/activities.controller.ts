@@ -85,6 +85,10 @@ export const updateActivity = async (
       );
     }
 
+		if (await checkDuplicateItemName(activitiesFields.itemName)) {
+      throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
+    }
+
     const updatedActivity = await ActivitiesModel.findOneAndUpdate(
       { _id: activityId, user: user }, // Query to match the document by _id and user
       { $set: activitiesFields }, // Update operation
