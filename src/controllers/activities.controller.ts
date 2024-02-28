@@ -11,9 +11,9 @@ export const createActivity = async (activitiesFields: ActivitiesType) => {
       throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
     }
 
-    const newActivities = new ActivitiesModel(activitiesFields);
-    await newActivities.save();
-    return newActivities;
+    const newActivity = new ActivitiesModel(activitiesFields);
+    await newActivity.save();
+    return newActivity;
   } catch (err: unknown) {
     if (err instanceof HttpError) {
       throw err;
@@ -74,11 +74,11 @@ export const getActivityById = async (user: string, activityId: string) => {
 
 export const updateActivity = async (
   user: string,
+	activityId: string,
   activitiesFields: ActivitiesType,
 ) => {
   try {
-    const _id = activitiesFields._id; // Extract the _id from activitiesFields
-    if (!_id) {
+    if (!activityId) {
       throw new HttpError(
         HttpStatus.BAD_REQUEST,
         "Missing activity ID for update",
@@ -86,7 +86,7 @@ export const updateActivity = async (
     }
 
     const updatedActivity = await ActivitiesModel.findOneAndUpdate(
-      { _id: _id, user: user }, // Query to match the document by _id and user
+      { _id: activityId, user: user }, // Query to match the document by _id and user
       { $set: activitiesFields }, // Update operation
       { new: true, runValidators: true }, // Options: return the updated document and run schema validators
     );

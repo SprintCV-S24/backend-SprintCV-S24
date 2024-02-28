@@ -49,9 +49,8 @@ describe("Activities controller tests", () => {
 
     expect(returnedActivity).toMatchObject(activityDummyData1);
 
-    await updateActivity(activityDummyData1.user, {
+    await updateActivity(activityDummyData1.user, returnedActivities[0]._id, {
       ...activityDummyData1,
-      _id: returnedActivities[0]._id,
       itemName: "activitiesItem2",
     } as ActivitiesType);
     const returnedActivity2 = await getActivityById(
@@ -61,9 +60,11 @@ describe("Activities controller tests", () => {
     expect(returnedActivity2?.itemName).to.equal("activitiesItem2");
 
     await deleteActivity(activityDummyData1.user, returnedActivities[0]._id);
-		const returnedActivities3 = await getAllActivities(activityDummyData1.user);
-		expect(returnedActivities3.length).to.equal(0);
+    const returnedActivities3 = await getAllActivities(activityDummyData1.user);
+    expect(returnedActivities3.length).to.equal(0);
 
-		await expect(updateActivity(activityDummyData1.user, {} as ActivitiesType)).rejects.toThrowError("Missing");
+    await expect(
+      updateActivity(activityDummyData1.user, "", {} as ActivitiesType),
+    ).rejects.toThrowError("Missing");
   });
 });
