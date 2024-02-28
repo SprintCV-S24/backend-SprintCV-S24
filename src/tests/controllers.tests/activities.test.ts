@@ -49,15 +49,16 @@ describe("Activities controller tests", () => {
 
     expect(returnedActivity).toMatchObject(activityDummyData1);
 
+		const newItem = "activitiesItem2";
     await updateActivity(activityDummyData1.user, returnedActivities[0]._id, {
       ...activityDummyData1,
-      itemName: "activitiesItem2",
+      itemName: newItem,
     } as ActivitiesType);
     const returnedActivity2 = await getActivityById(
       activityDummyData1.user,
       returnedActivities[0]._id,
     );
-    expect(returnedActivity2?.itemName).to.equal("activitiesItem2");
+    expect(returnedActivity2?.itemName).to.equal(newItem);
 
     await deleteActivity(activityDummyData1.user, returnedActivities[0]._id);
     const returnedActivities3 = await getAllActivities(activityDummyData1.user);

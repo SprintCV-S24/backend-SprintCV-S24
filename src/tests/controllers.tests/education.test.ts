@@ -18,7 +18,7 @@ describe("Education controller tests", () => {
     await createEducation(educationDummyData1 as EducationType);
     const returnedEducation = await getAllEducation(educationDummyData1.user);
 
-    //get back the 1 activity that was added
+    //get back the 1 education that was added
     expect(returnedEducation.length).to.equal(1);
     expect(returnedEducation[0]).toMatchObject(educationDummyData1);
 
@@ -49,15 +49,16 @@ describe("Education controller tests", () => {
 
     expect(returnedEducation).toMatchObject(educationDummyData1);
 
+		const newItemName = "educationItem2";
     await updateEducation(educationDummyData1.user, returnedEd[0]._id, {
       ...educationDummyData1,
-      itemName: "activitiesItem2",
+      itemName: newItemName,
     } as EducationType);
     const returnedEducation2 = await getEducationById(
       educationDummyData1.user,
       returnedEd[0]._id,
     );
-    expect(returnedEducation2?.itemName).to.equal("activitiesItem2");
+    expect(returnedEducation2?.itemName).to.equal(newItemName);
 
     await deleteEducation(educationDummyData1.user, returnedEd[0]._id);
     const returnedEducation3 = await getAllEducation(educationDummyData1.user);
