@@ -6,7 +6,9 @@ const Schema = mongoose.Schema;
 
 //typescript type corresponding with the mongoose schema structure
 export interface experienceType extends mongoose.Document {
-  description: string;
+	user: string;
+	itemName: string;
+  bullets: string[];
   title: string;
   subtitle: string;
   date: string;
@@ -15,7 +17,9 @@ export interface experienceType extends mongoose.Document {
 
 //mongoose schema for an event document
 const Experience = new Schema<experienceType>({
-  description: { type: String, required: true },
+	user: { type: String, required: true },
+	itemName: { type: String, required: true },
+  bullets: { type: [String], required: true },
   title: { type: String, required: true },
   subtitle: { type: String, required: true },
   date: { type: String, required: true },

@@ -4,7 +4,9 @@ const Schema = mongoose.Schema;
 
 // Interface for Education document
 export interface EducationType extends mongoose.Document {
-  description: string;
+	user: string;
+	itemName: string;
+  bullets: string[];
   title: string;
   subtitle: string;
   location: string;
@@ -13,11 +15,13 @@ export interface EducationType extends mongoose.Document {
 
 // Education Schema
 const Education = new Schema<EducationType>({
-  description: { type: String, required: true },
+	user: { type: String, required: true },
+	itemName: { type: String, required: true },
+  bullets: { type: [String], required: true },
   title: { type: String, required: true },
   subtitle: { type: String, required: true },
   location: { type: String, required: true },
   year: { type: String, required: true },
 });
 
-export const EducationModel = mongoose.model("Education", Education);
+export const EducationModel = mongoose.model("Education", Education, "education");
