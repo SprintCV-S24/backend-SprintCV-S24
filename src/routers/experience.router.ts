@@ -1,24 +1,24 @@
 import { Router, type Request, type Response } from "express";
 import {
-  createSkill,
-  getAllSkills,
-  getSkillById,
-  updateSkill,
-  deleteSkill,
-} from "../controllers/skills.controller";
+  createExperience,
+  getAllExperiences,
+  getExperienceById,
+  updateExperience,
+  deleteExperience,
+} from "../controllers/experience.controller";
 import { HttpError, HttpStatus } from "../utils/errors";
-import { type SkillsType } from "../models/skills.model";
+import { type ExperienceType } from "../models/experience.model";
 
-export const skillRouter = Router();
+export const experienceRouter = Router();
 
-//Add an skill
-//Note that the user field (which is part of SkillsType) in body is automatically populated by verifyToken middleware
-skillRouter.post(
+//Add an experience
+//Note that the user field (which is part of ExperienceType) in body is automatically populated by verifyToken middleware
+experienceRouter.post(
   "/",
-  async (req: Request<any, any, SkillsType>, res: Response) => {
+  async (req: Request<any, any, ExperienceType>, res: Response) => {
     try {
-      const skill = await createSkill(req.body);
-      res.status(HttpStatus.OK).json(skill);
+      const experience = await createExperience(req.body);
+      res.status(HttpStatus.OK).json(experience);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
         res.status(err.errorCode).json({ error: err.message });
@@ -31,13 +31,13 @@ skillRouter.post(
   },
 );
 
-//Get all skill
-skillRouter.get(
+//Get all experience
+experienceRouter.get(
   "/",
-  async (req: Request<any, any, SkillsType>, res: Response) => {
+  async (req: Request<any, any, ExperienceType>, res: Response) => {
     try {
-      const skill = await getAllSkills(req.body.user);
-      res.status(HttpStatus.OK).json(skill);
+      const experience = await getAllExperiences(req.body.user);
+      res.status(HttpStatus.OK).json(experience);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
         res.status(err.errorCode).json({ error: err.message });
@@ -50,16 +50,16 @@ skillRouter.get(
   },
 );
 
-//Get a single skill by id
-skillRouter.get(
-  "/:skillId",
-  async (req: Request<any, any, SkillsType>, res: Response) => {
+//Get a single experience by id
+experienceRouter.get(
+  "/:experienceId",
+  async (req: Request<any, any, ExperienceType>, res: Response) => {
     try {
-      const skill = await getSkillById(
+      const experience = await getExperienceById(
         req.body.user,
-        req.params.skillId,
+        req.params.experienceId,
       );
-      res.status(HttpStatus.OK).json(skill);
+      res.status(HttpStatus.OK).json(experience);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
         res.status(err.errorCode).json({ error: err.message });
@@ -72,17 +72,17 @@ skillRouter.get(
   },
 );
 
-//Update an skill
-skillRouter.put(
-  "/:skillId",
-  async (req: Request<any, any, SkillsType>, res: Response) => {
+//Update an experience
+experienceRouter.put(
+  "/:experienceId",
+  async (req: Request<any, any, ExperienceType>, res: Response) => {
     try {
-      const skill = await updateSkill(
+      const experience = await updateExperience(
         req.body.user,
-        req.params.skillId,
+        req.params.experienceId,
         req.body,
       );
-      res.status(HttpStatus.OK).json(skill);
+      res.status(HttpStatus.OK).json(experience);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
         res.status(err.errorCode).json({ error: err.message });
@@ -95,16 +95,16 @@ skillRouter.put(
   },
 );
 
-//Delete an skill
-skillRouter.delete(
-  "/:skillId",
-  async (req: Request<any, any, SkillsType>, res: Response) => {
+//Delete an experience
+experienceRouter.delete(
+  "/:experienceId",
+  async (req: Request<any, any, ExperienceType>, res: Response) => {
     try {
-      const skill = await deleteSkill(
+      const experience = await deleteExperience(
         req.body.user,
-        req.params.skillId,
+        req.params.experienceId,
       );
-      res.status(HttpStatus.OK).json(skill);
+      res.status(HttpStatus.OK).json(experience);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
         res.status(err.errorCode).json({ error: err.message });
@@ -116,4 +116,3 @@ skillRouter.delete(
     }
   },
 );
-

@@ -1,24 +1,24 @@
 import { Router, type Request, type Response } from "express";
 import {
-  createSkill,
-  getAllSkills,
-  getSkillById,
-  updateSkill,
-  deleteSkill,
-} from "../controllers/skills.controller";
+  createHeading,
+  getAllHeadings,
+  getHeadingById,
+  updateHeading,
+  deleteHeading,
+} from "../controllers/heading.controller";
 import { HttpError, HttpStatus } from "../utils/errors";
-import { type SkillsType } from "../models/skills.model";
+import { type HeadingType } from "../models/heading.model";
 
-export const skillRouter = Router();
+export const headingRouter = Router();
 
-//Add an skill
-//Note that the user field (which is part of SkillsType) in body is automatically populated by verifyToken middleware
-skillRouter.post(
+//Add an heading
+//Note that the user field (which is part of HeadingType) in body is automatically populated by verifyToken middleware
+headingRouter.post(
   "/",
-  async (req: Request<any, any, SkillsType>, res: Response) => {
+  async (req: Request<any, any, HeadingType>, res: Response) => {
     try {
-      const skill = await createSkill(req.body);
-      res.status(HttpStatus.OK).json(skill);
+      const heading = await createHeading(req.body);
+      res.status(HttpStatus.OK).json(heading);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
         res.status(err.errorCode).json({ error: err.message });
@@ -31,13 +31,13 @@ skillRouter.post(
   },
 );
 
-//Get all skill
-skillRouter.get(
+//Get all heading
+headingRouter.get(
   "/",
-  async (req: Request<any, any, SkillsType>, res: Response) => {
+  async (req: Request<any, any, HeadingType>, res: Response) => {
     try {
-      const skill = await getAllSkills(req.body.user);
-      res.status(HttpStatus.OK).json(skill);
+      const heading = await getAllHeadings(req.body.user);
+      res.status(HttpStatus.OK).json(heading);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
         res.status(err.errorCode).json({ error: err.message });
@@ -50,16 +50,16 @@ skillRouter.get(
   },
 );
 
-//Get a single skill by id
-skillRouter.get(
-  "/:skillId",
-  async (req: Request<any, any, SkillsType>, res: Response) => {
+//Get a single heading by id
+headingRouter.get(
+  "/:headingId",
+  async (req: Request<any, any, HeadingType>, res: Response) => {
     try {
-      const skill = await getSkillById(
+      const heading = await getHeadingById(
         req.body.user,
-        req.params.skillId,
+        req.params.headingId,
       );
-      res.status(HttpStatus.OK).json(skill);
+      res.status(HttpStatus.OK).json(heading);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
         res.status(err.errorCode).json({ error: err.message });
@@ -72,17 +72,17 @@ skillRouter.get(
   },
 );
 
-//Update an skill
-skillRouter.put(
-  "/:skillId",
-  async (req: Request<any, any, SkillsType>, res: Response) => {
+//Update an heading
+headingRouter.put(
+  "/:headingId",
+  async (req: Request<any, any, HeadingType>, res: Response) => {
     try {
-      const skill = await updateSkill(
+      const heading = await updateHeading(
         req.body.user,
-        req.params.skillId,
+        req.params.headingId,
         req.body,
       );
-      res.status(HttpStatus.OK).json(skill);
+      res.status(HttpStatus.OK).json(heading);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
         res.status(err.errorCode).json({ error: err.message });
@@ -95,16 +95,16 @@ skillRouter.put(
   },
 );
 
-//Delete an skill
-skillRouter.delete(
-  "/:skillId",
-  async (req: Request<any, any, SkillsType>, res: Response) => {
+//Delete an heading
+headingRouter.delete(
+  "/:headingId",
+  async (req: Request<any, any, HeadingType>, res: Response) => {
     try {
-      const skill = await deleteSkill(
+      const heading = await deleteHeading(
         req.body.user,
-        req.params.skillId,
+        req.params.headingId,
       );
-      res.status(HttpStatus.OK).json(skill);
+      res.status(HttpStatus.OK).json(heading);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
         res.status(err.errorCode).json({ error: err.message });
@@ -116,4 +116,3 @@ skillRouter.delete(
     }
   },
 );
-
