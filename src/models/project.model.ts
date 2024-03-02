@@ -8,6 +8,7 @@ export interface ProjectType extends mongoose.Document {
 	itemName: string;
   bullets: string[];
   title: string;
+	technologies?: string;
   year: string;
 }
 
@@ -17,6 +18,7 @@ const Project = new Schema<ProjectType>({
 	itemName: { type: String, required: true },
   bullets: { type: [String], required: true },
   title: { type: String, required: true },
+	technologies: {type: String, required: false},
   year: { type: String, required: true },
 });
 
