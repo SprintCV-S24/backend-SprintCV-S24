@@ -2,6 +2,8 @@ import {
     ExperienceModel,
     type ExperienceType,
   } from "../models/experience.model";
+	import { ResumeModel } from "../models/resume.model";
+import mongoose from "mongoose";
   import { HttpError, HttpStatus, checkMongooseErrors } from "../utils/errors";
   import { checkDuplicateItemName } from "../utils/checkDuplicates";
   
@@ -113,6 +115,11 @@ import {
   
   export const deleteExperience = async (user: string, experienceId: string) => {
     try {
+			await ResumeModel.updateMany(
+				{ itemIds: new mongoose.Types.ObjectId(experienceId) },
+				{ $pull: { itemIds: new mongoose.Types.ObjectId(experienceId) } }
+			);
+
       const deletedExperience = await ExperienceModel.findOneAndDelete({
         _id: experienceId,
         user: user,

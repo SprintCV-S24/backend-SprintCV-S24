@@ -7,13 +7,13 @@ const Schema = mongoose.Schema;
 export interface resumeType extends mongoose.Document {
 	user: string;
 	itemName: string;
-  itemIds: mongoose.Schema.Types.ObjectId[];
-  templateId: mongoose.Schema.Types.ObjectId;
+  itemIds: mongoose.Types.ObjectId[];
+  templateId: mongoose.Types.ObjectId;
 }
 
 const Resume = new Schema<resumeType>({
 	user: { type: String, required: true },
-	itemName: { type: String, required: true },
+	itemName: { type: String, required: true, unique: true },
   itemIds: { type: [Schema.Types.ObjectId], required: true },
   templateId: { type: Schema.Types.ObjectId, required: true },
 });

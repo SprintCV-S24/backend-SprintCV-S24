@@ -2,6 +2,8 @@ import {
   ActivitiesModel,
   type ActivitiesType,
 } from "../models/activities.model";
+import { ResumeModel } from "../models/resume.model";
+import mongoose from "mongoose";
 import { HttpError, HttpStatus, checkMongooseErrors } from "../utils/errors";
 import { checkDuplicateItemName } from "../utils/checkDuplicates";
 
@@ -113,6 +115,11 @@ export const updateActivity = async (
 
 export const deleteActivity = async (user: string, activityId: string) => {
   try {
+		await ResumeModel.updateMany(
+			{ itemIds: new mongoose.Types.ObjectId(activityId) },
+			{ $pull: { itemIds: new mongoose.Types.ObjectId(activityId) } }
+		);
+
     const deletedActivity = await ActivitiesModel.findOneAndDelete({
       _id: activityId,
       user: user,

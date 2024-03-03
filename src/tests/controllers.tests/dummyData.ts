@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 export const activityDummyData1 = {
   user: "test",
   itemName: "activitesItem1",
@@ -53,6 +55,13 @@ export const skillsDummyData1 = {
   itemName: "activitiesItem1",
   title: "title",
   description: "description"
+}
+
+export const resumeDummyData1 = {
+	user: "test",
+	itemName: "resumeItem1",
+  itemIds: [new mongoose.Types.ObjectId("65e4f54db1e12e776e01cf31")],
+  templateId: new mongoose.Types.ObjectId("75e4f54db1e12e776e01cf31"),
 }
 
 

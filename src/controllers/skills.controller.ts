@@ -1,4 +1,6 @@
 import { SkillsModel, type SkillsType } from "../models/skills.model";
+import { ResumeModel } from "../models/resume.model";
+import mongoose from "mongoose";
 import { HttpError, HttpStatus, checkMongooseErrors } from "../utils/errors";
 import { checkDuplicateItemName } from "../utils/checkDuplicates";
 
@@ -113,6 +115,11 @@ export const updateSkill = async (
 
 export const deleteSkill = async (user: string, skillId: string) => {
   try {
+		await ResumeModel.updateMany(
+			{ itemIds: new mongoose.Types.ObjectId(skillId) },
+			{ $pull: { itemIds: new mongoose.Types.ObjectId(skillId) } }
+		);
+
     const deletedSkill = await SkillsModel.findOneAndDelete({
       _id: skillId,
       user: user,

@@ -2,6 +2,8 @@ import {
     HeadingModel,
     type HeadingType,
   } from "../models/heading.model";
+	import { ResumeModel } from "../models/resume.model";
+import mongoose from "mongoose";
   import { HttpError, HttpStatus, checkMongooseErrors } from "../utils/errors";
   import { checkDuplicateItemName } from "../utils/checkDuplicates";
   
@@ -113,6 +115,11 @@ import {
   
   export const deleteHeading = async (user: string, headingId: string) => {
     try {
+			await ResumeModel.updateMany(
+				{ itemIds: new mongoose.Types.ObjectId(headingId) },
+				{ $pull: { itemIds: new mongoose.Types.ObjectId(headingId) } }
+			);
+
       const deletedHeading = await HeadingModel.findOneAndDelete({
         _id: headingId,
         user: user,
