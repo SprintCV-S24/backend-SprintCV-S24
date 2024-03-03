@@ -64,4 +64,8 @@ export const resumeDummyData1 = {
   templateId: new mongoose.Types.ObjectId("75e4f54db1e12e776e01cf31"),
 }
 
-
+export const sectionHeadingDummyData1 = {
+	user: "test",
+	itemName: "sectionHeadingItem1",
+  title: "test section heading",
+}
