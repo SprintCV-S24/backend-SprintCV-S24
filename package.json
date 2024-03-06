@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon src/index.ts",
     "build": "tsc",
-    "test": "vitest",
+    "test": "vitest run",
     "lint": "eslint --ext .ts . --fix",
     "typecheck": "tsc --noEmit"
   },
@@ -35,6 +35,7 @@
     "eslint-plugin-n": "^16.1.0",
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-promise": "^6.1.1",
+    "mongodb-memory-server": "^9.1.6",
     "nodemon": "^3.0.1",
     "prettier": "^3.0.3",
     "ts-node": "^10.9.1",
