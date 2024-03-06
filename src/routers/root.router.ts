@@ -6,6 +6,7 @@ import { experienceRouter } from "./experience.router";
 import { headingRouter } from "./heading.router";
 import { projectRouter } from "./project.router";
 import { resumeRouter } from "./resume.router";
+import { sectionHeadingRouter } from "./sectionHeading.router";
 
 export const router = Router();
 
@@ -16,3 +17,4 @@ router.use("/experience", experienceRouter);
 router.use("/headings", headingRouter);
 router.use("/projects", projectRouter);
 router.use("/resumes", resumeRouter);
+router.use("/sectionHeadings", sectionHeadingRouter);
