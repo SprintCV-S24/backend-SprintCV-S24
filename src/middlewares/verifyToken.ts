@@ -25,7 +25,8 @@ export const verifyToken = async (
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    req.body.user = decodeValue;
+    req.body.userData = decodeValue;
+		req.body.user = decodeValue.uid;
     next();
   } catch (e) {
     next(e); // Pass the error to Express error-handling middleware
