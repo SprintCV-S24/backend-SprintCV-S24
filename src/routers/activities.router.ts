@@ -11,8 +11,9 @@ import { type ActivitiesType } from "../models/activities.model";
 
 export const activitiesRouter = Router();
 
-//Add an activity
-//Note that the user field (which is part of activitiesType) in body is automatically populated by verifyToken middleware
+/**
+ * Route to add a new activity. The user field in the activity data is populated by the verifyToken middleware.
+ */
 activitiesRouter.post(
   "/",
   async (req: Request<any, any, ActivitiesType>, res: Response) => {
@@ -31,7 +32,9 @@ activitiesRouter.post(
   },
 );
 
-//Get all activities
+/**
+ * Route to get all activities for a user.
+ */
 activitiesRouter.get(
   "/",
   async (req: Request<any, any, ActivitiesType>, res: Response) => {
@@ -50,7 +53,9 @@ activitiesRouter.get(
   },
 );
 
-//Get a single activity by id
+/**
+ * Route to get a specific activity by its ID.
+ */
 activitiesRouter.get(
   "/:activityId",
   async (req: Request<any, any, ActivitiesType>, res: Response) => {
@@ -69,7 +74,9 @@ activitiesRouter.get(
   },
 );
 
-//Update an activity
+/**
+ * Route to update a specific activity by its ID.
+ */
 activitiesRouter.put(
   "/:activityId",
   async (req: Request<any, any, ActivitiesType>, res: Response) => {
@@ -88,7 +95,9 @@ activitiesRouter.put(
   },
 );
 
-//Delete an activity
+/**
+ * Route to delete a specific activity by its ID.
+ */
 activitiesRouter.delete(
   "/:activityId",
   async (req: Request<any, any, ActivitiesType>, res: Response) => {

@@ -7,6 +7,13 @@ import mongoose from "mongoose";
 import { HttpError, HttpStatus, checkMongooseErrors } from "../utils/errors";
 import { checkDuplicateItemName } from "../utils/checkDuplicates";
 
+/**
+ * Creates a new activity document in the database.a
+ *
+ * @param {ActivitiesType} activitiesFields - The activity fields to be saved.
+ * @returns {Promise<ActivitiesModel>} A promise that resolves with the newly created activity.
+ * @throws {HttpError} If the item name is a duplicate or if an error occurs during the database operation.
+ */
 export const createActivity = async (activitiesFields: ActivitiesType) => {
   try {
     if (await checkDuplicateItemName(activitiesFields.itemName)) {
@@ -31,6 +38,13 @@ export const createActivity = async (activitiesFields: ActivitiesType) => {
   }
 };
 
+/**
+ * Retrieves all activities associated with a specific user.
+ *
+ * @param {string} user - The ID of the user whose activities are to be retrieved.
+ * @returns {Promise<ActivitiesModel[]>} A promise that resolves with an array of activities.
+ * @throws {HttpError} If an error occurs during the database operation.
+ */
 export const getAllActivities = async (user: string) => {
   try {
     const activities = await ActivitiesModel.find({ user: user });
@@ -51,6 +65,14 @@ export const getAllActivities = async (user: string) => {
   }
 };
 
+/**
+ * Retrieves a specific activity by its ID and user ID.
+ *
+ * @param {string} user - The ID of the user.
+ * @param {string} activityId - The ID of the activity to retrieve.
+ * @returns {Promise<ActivitiesModel|null>} A promise that resolves with the activity or null if not found.
+ * @throws {HttpError} If an error occurs during the database operation.
+ */
 export const getActivityById = async (user: string, activityId: string) => {
   try {
     const activity = await ActivitiesModel.findOne({
@@ -74,6 +96,15 @@ export const getActivityById = async (user: string, activityId: string) => {
   }
 };
 
+/**
+ * Updates an existing activity document.
+ *
+ * @param {string} user - The ID of the user who owns the activity.
+ * @param {string} activityId - The ID of the activity to update.
+ * @param {ActivitiesType} activitiesFields - The fields to update in the activity document.
+ * @returns {Promise<ActivitiesModel|null>} A promise that resolves with the updated activity or null if not found.
+ * @throws {HttpError} If the activity ID is missing, the item name is a duplicate, or an error occurs during the database operation.
+ */
 export const updateActivity = async (
   user: string,
 	activityId: string,
@@ -113,6 +144,14 @@ export const updateActivity = async (
   }
 };
 
+/**
+ * Deletes a specific activity document.
+ *
+ * @param {string} user - The ID of the user who owns the activity.
+ * @param {string} activityId - The ID of the activity to be deleted.
+ * @returns {Promise<Object>} A promise that resolves with a success message object.
+ * @throws {HttpError} If the activity is not found, already deleted, or an error occurs during the database operation.
+ */
 export const deleteActivity = async (user: string, activityId: string) => {
   try {
 		await ResumeModel.updateMany(
