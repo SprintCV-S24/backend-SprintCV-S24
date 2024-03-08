@@ -85,7 +85,7 @@ export const updateResume = async (
       );
     }
 
-		if (await checkDuplicateItemName(resumesFields.itemName, resumeId)) {
+		if (resumesFields.itemName != null && await checkDuplicateItemName(resumesFields.itemName, resumeId)) {
       throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
     }
 

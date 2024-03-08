@@ -87,7 +87,7 @@ export const updateSectionHeading = async (
       );
     }
 
-		if (await checkDuplicateItemName(sectionHeadingsFields.itemName, sectionHeadingId)) {
+		if (sectionHeadingsFields.itemName != null &&await checkDuplicateItemName(sectionHeadingsFields.itemName, sectionHeadingId)) {
       throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
     }
 
