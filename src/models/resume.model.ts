@@ -15,7 +15,7 @@ const Resume = new Schema<resumeType>({
 	user: { type: String, required: true },
 	itemName: { type: String, required: true, unique: true },
   itemIds: { type: [Schema.Types.ObjectId], required: true },
-  templateId: { type: Schema.Types.ObjectId, required: true },
+  templateId: { type: Schema.Types.ObjectId, required: false, default: null },
 });
 
 export const ResumeModel = mongoose.model("Resume", Resume);
