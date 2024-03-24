@@ -1,13 +1,13 @@
 import { ResumeModel, type resumeType } from "../models/resume.model";
 import { HttpError, HttpStatus, checkMongooseErrors } from "../utils/errors";
-import { checkDuplicateItemName } from "../utils/checkDuplicates";
+import { checkDuplicateResumeName } from "../utils/checkDuplicates";
 
 export const createResume = async (resumesFields: resumeType) => {
   try {
-		if(await checkDuplicateItemName(resumesFields.itemName)){
+		if(await checkDuplicateResumeName(resumesFields.itemName)){
 			throw new HttpError(
 				HttpStatus.BAD_REQUEST,
-				"Duplicate item name",
+				"Duplicate resume name",
 			)
 		}
 
@@ -85,8 +85,8 @@ export const updateResume = async (
       );
     }
 
-		if (await checkDuplicateItemName(resumesFields.itemName, resumeId)) {
-      throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
+		if (resumesFields.itemName != null && await checkDuplicateResumeName(resumesFields.itemName, resumeId)) {
+      throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate resume name");
     }
 
     const updatedResume = await ResumeModel.findOneAndUpdate(

@@ -87,7 +87,7 @@ export const updateSkill = async (
       );
     }
 
-		if (await checkDuplicateItemName(skillsFields.itemName, skillId)) {
+		if (skillsFields.itemName != null && await checkDuplicateItemName(skillsFields.itemName, skillId)) {
       throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
     }
 
