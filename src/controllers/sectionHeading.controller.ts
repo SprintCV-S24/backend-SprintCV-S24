@@ -6,7 +6,7 @@ import { checkDuplicateItemName } from "../utils/checkDuplicates";
 
 export const createSectionHeading = async (sectionHeadingsFields: SectionHeadingType) => {
   try {
-		if(await checkDuplicateItemName(sectionHeadingsFields.itemName)){
+		if(await checkDuplicateItemName(sectionHeadingsFields.user, sectionHeadingsFields.itemName)){
 			throw new HttpError(
 				HttpStatus.BAD_REQUEST,
 				"Duplicate item name",
@@ -87,7 +87,7 @@ export const updateSectionHeading = async (
       );
     }
 
-		if (sectionHeadingsFields.itemName != null &&await checkDuplicateItemName(sectionHeadingsFields.itemName, sectionHeadingId)) {
+		if (sectionHeadingsFields.itemName != null &&await checkDuplicateItemName(sectionHeadingsFields.user, sectionHeadingsFields.itemName, sectionHeadingId)) {
       throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
     }
 

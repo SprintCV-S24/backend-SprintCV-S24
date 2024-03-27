@@ -9,7 +9,7 @@ import { checkDuplicateItemName } from "../utils/checkDuplicates";
 
 export const createExperience = async (experienceFields: ExperienceType) => {
   try {
-    if (await checkDuplicateItemName(experienceFields.itemName)) {
+    if (await checkDuplicateItemName(experienceFields.user, experienceFields.itemName)) {
       throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
     }
 
@@ -89,7 +89,7 @@ export const updateExperience = async (
 
     if (
       experienceFields.itemName != null &&
-      (await checkDuplicateItemName(experienceFields.itemName, experienceId))
+      (await checkDuplicateItemName(experienceFields.user, experienceFields.itemName, experienceId))
     ) {
       throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
     }

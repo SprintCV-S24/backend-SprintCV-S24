@@ -6,7 +6,7 @@ import { checkDuplicateItemName } from "../utils/checkDuplicates";
 
 export const createHeading = async (headingFields: HeadingType) => {
   try {
-    if (await checkDuplicateItemName(headingFields.itemName)) {
+    if (await checkDuplicateItemName(headingFields.user, headingFields.itemName)) {
       throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
     }
 
@@ -86,7 +86,7 @@ export const updateHeading = async (
 
     if (
       headingFields.itemName != null &&
-      (await checkDuplicateItemName(headingFields.itemName, headingId))
+      (await checkDuplicateItemName(headingFields.user, headingFields.itemName, headingId))
     ) {
       throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
     }
