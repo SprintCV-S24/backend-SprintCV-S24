@@ -9,7 +9,7 @@ import { checkDuplicateItemName } from "../utils/checkDuplicates";
 
 export const createActivity = async (activitiesFields: ActivitiesType) => {
   try {
-    if (await checkDuplicateItemName(activitiesFields.itemName)) {
+    if (await checkDuplicateItemName(activitiesFields.user, activitiesFields.itemName)) {
       throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
     }
 
@@ -87,7 +87,7 @@ export const updateActivity = async (
       );
     }
 
-		if (activitiesFields.itemName != null && await checkDuplicateItemName(activitiesFields.itemName, activityId)) {
+		if (activitiesFields.itemName != null && await checkDuplicateItemName(activitiesFields.user, activitiesFields.itemName, activityId)) {
       throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
     }
 

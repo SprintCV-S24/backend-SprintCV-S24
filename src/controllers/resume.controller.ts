@@ -4,12 +4,10 @@ import { checkDuplicateResumeName } from "../utils/checkDuplicates";
 
 export const createResume = async (resumesFields: resumeType) => {
   try {
-		if(await checkDuplicateResumeName(resumesFields.itemName)){
-			throw new HttpError(
-				HttpStatus.BAD_REQUEST,
-				"Duplicate resume name",
-			)
-		}
+    resumesFields.itemName = await generateUniqueResumeName(
+      resumesFields.user,
+      resumesFields.itemName,
+    );
 
     const newResumes = new ResumeModel(resumesFields);
     await newResumes.save();
@@ -30,7 +28,7 @@ export const createResume = async (resumesFields: resumeType) => {
 };
 
 export const getAllResumes = async (user: string) => {
-	try {
+  try {
     const resumes = await ResumeModel.find({ user: user });
     return resumes;
   } catch (err: unknown) {
@@ -47,7 +45,7 @@ export const getAllResumes = async (user: string) => {
       { cause: err },
     );
   }
-}
+};
 
 export const getResumeById = async (user: string, resumeId: string) => {
   try {
@@ -74,7 +72,7 @@ export const getResumeById = async (user: string, resumeId: string) => {
 
 export const updateResume = async (
   user: string,
-	resumeId: string,
+  resumeId: string,
   resumesFields: resumeType,
 ) => {
   try {
@@ -85,7 +83,14 @@ export const updateResume = async (
       );
     }
 
-		if (resumesFields.itemName != null && await checkDuplicateResumeName(resumesFields.itemName, resumeId)) {
+    if (
+      resumesFields.itemName != null &&
+      (await checkDuplicateResumeName(
+        resumesFields.user,
+        resumesFields.itemName,
+        resumeId,
+      ))
+    ) {
       throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate resume name");
     }
 
@@ -138,4 +143,21 @@ export const deleteResume = async (user: string, resumeId: string) => {
       { cause: err },
     );
   }
+};
+
+export const generateUniqueResumeName = async (
+  user: string,
+  origName: string,
+) => {
+  if (!(await checkDuplicateResumeName(user, origName))) {
+    return origName;
+  }
+
+  let counter = 1;
+  let newName = `${origName} (${counter})`;
+  while (await checkDuplicateResumeName(user, newName)) {
+    counter++;
+    newName = `${origName} (${counter})`;
+  }
+  return newName;
 };

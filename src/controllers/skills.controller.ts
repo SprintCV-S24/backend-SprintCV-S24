@@ -6,7 +6,7 @@ import { checkDuplicateItemName } from "../utils/checkDuplicates";
 
 export const createSkill = async (skillsFields: SkillsType) => {
   try {
-		if(await checkDuplicateItemName(skillsFields.itemName)){
+		if(await checkDuplicateItemName(skillsFields.user, skillsFields.itemName)){
 			throw new HttpError(
 				HttpStatus.BAD_REQUEST,
 				"Duplicate item name",
@@ -87,7 +87,7 @@ export const updateSkill = async (
       );
     }
 
-		if (skillsFields.itemName != null && await checkDuplicateItemName(skillsFields.itemName, skillId)) {
+		if (skillsFields.itemName != null && await checkDuplicateItemName(skillsFields.user, skillsFields.itemName, skillId)) {
       throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
     }
 

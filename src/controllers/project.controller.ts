@@ -6,7 +6,7 @@ import { checkDuplicateItemName } from "../utils/checkDuplicates";
 
 export const createProject = async (projectFields: ProjectType) => {
   try {
-    if (await checkDuplicateItemName(projectFields.itemName)) {
+    if (await checkDuplicateItemName(projectFields.user, projectFields.itemName)) {
       throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
     }
 

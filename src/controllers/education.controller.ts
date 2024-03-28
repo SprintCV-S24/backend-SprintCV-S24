@@ -6,7 +6,7 @@ import { checkDuplicateItemName } from "../utils/checkDuplicates";
 
 export const createEducation = async (educationFields: EducationType) => {
   try {
-    if (await checkDuplicateItemName(educationFields.itemName)) {
+    if (await checkDuplicateItemName(educationFields.user, educationFields.itemName)) {
       throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
     }
 
@@ -84,7 +84,7 @@ export const updateEducation = async (
       );
     }
 
-		if (educationFields.itemName != null && await checkDuplicateItemName(educationFields.itemName, educationId)) {
+		if (educationFields.itemName != null && await checkDuplicateItemName(educationFields.user, educationFields.itemName, educationId)) {
       throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
     }
 

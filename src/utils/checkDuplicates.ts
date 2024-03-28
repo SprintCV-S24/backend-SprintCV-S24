@@ -8,7 +8,7 @@ import { SectionHeadingModel } from "../models/sectionHeading.model";
 import { SkillsModel } from "../models/skills.model";
 import { ResumeModel } from "../models/resume.model";
 
-export const checkDuplicateItemName = async (value: string, excludedId: string | null = null): Promise<boolean> => {
+export const checkDuplicateItemName = async (user: string, value: string, excludedId: string | null = null): Promise<boolean> => {
   const field = "itemName";
   const models = [
     ActivitiesModel,
@@ -22,7 +22,7 @@ export const checkDuplicateItemName = async (value: string, excludedId: string |
 
   // Check each model for the count of documents with the specified itemName value
   const checks = models.map((model) =>
-    model.countDocuments({ [field]: value, '_id': { $ne: excludedId } }).exec(),
+    model.countDocuments({ user, [field]: value, '_id': { $ne: excludedId } }).exec(),
   );
 
   // Await all checks to resolve
@@ -35,13 +35,13 @@ export const checkDuplicateItemName = async (value: string, excludedId: string |
   return totalDuplicates > 0;
 };
 
-export const checkDuplicateResumeName = async (value: string, excludedId: string | null = null): Promise<boolean> => {
+export const checkDuplicateResumeName = async (user: string, value: string, excludedId: string | null = null): Promise<boolean> => {
   const field = "itemName";
   const models = [ResumeModel];
 
   // Check each model for the count of documents with the specified itemName value
   const checks = models.map((model) =>
-    model.countDocuments({ [field]: value, '_id': { $ne: excludedId } }).exec(),
+    model.countDocuments({ user, [field]: value, '_id': { $ne: excludedId } }).exec(),
   );
 
   // Await all checks to resolve
