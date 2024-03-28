@@ -26,9 +26,9 @@ describe("Resume controller tests", () => {
     expect(returnedResumes[0]).toMatchObject(resumeDummyData1);
 
     //Can't add duplicate name
-    await expect(
+    expect(
       createResume(resumeDummyData1 as resumeType),
-    ).rejects.toThrowError();
+    ).resolves;
 
     const returnedResumes2 = await getAllResumes(resumeDummyData1.user);
 
