@@ -17,6 +17,15 @@ describe("Resume controller tests", () => {
   beforeEach(async () => dbConnect());
   afterEach(async () => dbDisconnect());
 
+	test("Errors throw correctly", async () => {
+		await expect(createResume({} as resumeType)).rejects.toThrowError("failed");
+		await expect(getAllResumes({} as string)).rejects.toThrowError();
+		await expect(getResumeById({} as string, {} as string)).rejects.toThrowError();
+		await expect(updateResume({} as string, {} as string, {} as resumeType)).rejects.toThrowError();
+		await expect(deleteResume({} as string, {} as string)).rejects.toThrowError();
+		await expect(deleteResume("1234", "65f2268e3dc262b1277ba0e5")).rejects.toThrowError();
+	});
+
   test("Adds and retrieves a resumes", async () => {
     await createResume(resumeDummyData1 as resumeType);
     const returnedResumes = await getAllResumes(resumeDummyData1.user);

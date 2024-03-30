@@ -14,6 +14,15 @@ describe("Heading controller tests", () => {
   beforeEach(async () => dbConnect());
   afterEach(async () => dbDisconnect());
 
+	test("Errors throw correctly", async () => {
+		await expect(createHeading({} as HeadingType)).rejects.toThrowError("failed");
+		await expect(getAllHeadings({} as string)).rejects.toThrowError();
+		await expect(getHeadingById({} as string, {} as string)).rejects.toThrowError();
+		await expect(updateHeading({} as string, {} as string, {} as HeadingType)).rejects.toThrowError();
+		await expect(deleteHeading({} as string, {} as string)).rejects.toThrowError();
+		await expect(deleteHeading("1234", "65f2268e3dc262b1277ba0e5")).rejects.toThrowError();
+	});
+
   test("Adds and retrieves an heading", async () => {
     await createHeading(headingDummyData1 as HeadingType);
     const returnedHeading = await getAllHeadings(headingDummyData1.user);

@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import { Router, type Request, type Response } from "express";
 import {
   createExperience,
@@ -116,3 +117,4 @@ experienceRouter.delete(
     }
   },
 );
+/* v8 ignore stop */

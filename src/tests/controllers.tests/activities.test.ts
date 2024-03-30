@@ -14,8 +14,17 @@ describe("Activities controller tests", () => {
   beforeEach(async () => dbConnect());
   afterEach(async () => dbDisconnect());
 
+	test("Errors throw correctly", async () => {
+		await expect(createActivity({} as ActivitiesType)).rejects.toThrowError("failed");
+		await expect(getAllActivities({} as string)).rejects.toThrowError();
+		await expect(getActivityById({} as string, {} as string)).rejects.toThrowError();
+		await expect(updateActivity({} as string, {} as string, {} as ActivitiesType)).rejects.toThrowError();
+		await expect(deleteActivity({} as string, {} as string)).rejects.toThrowError();
+		await expect(deleteActivity("1234", "65f2268e3dc262b1277ba0e5")).rejects.toThrowError();
+	});
+
   test("Adds and retrieves an activity", async () => {
-    await createActivity(activityDummyData1 as ActivitiesType);
+		await createActivity(activityDummyData1 as ActivitiesType);
     const returnedActivities = await getAllActivities(activityDummyData1.user);
 
     //get back the 1 activity that was added

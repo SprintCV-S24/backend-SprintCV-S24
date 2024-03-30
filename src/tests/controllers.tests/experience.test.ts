@@ -14,6 +14,15 @@ describe("Experience controller tests", () => {
   beforeEach(async () => dbConnect());
   afterEach(async () => dbDisconnect());
 
+	test("Errors throw correctly", async () => {
+		await expect(createExperience({} as ExperienceType)).rejects.toThrowError("failed");
+		await expect(getAllExperiences({} as string)).rejects.toThrowError();
+		await expect(getExperienceById({} as string, {} as string)).rejects.toThrowError();
+		await expect(updateExperience({} as string, {} as string, {} as ExperienceType)).rejects.toThrowError();
+		await expect(deleteExperience({} as string, {} as string)).rejects.toThrowError();
+		await expect(deleteExperience("1234", "65f2268e3dc262b1277ba0e5")).rejects.toThrowError();
+	});
+
   test("Adds and retrieves an experience", async () => {
     await createExperience(experienceDummyData1 as ExperienceType);
     const returnedExperience = await getAllExperiences(experienceDummyData1.user);

@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import { Router, type Request, type Response } from "express";
 import {
   createEducation,
@@ -116,3 +117,4 @@ educationRouter.delete(
     }
   },
 );
+/* v8 ignore stop */

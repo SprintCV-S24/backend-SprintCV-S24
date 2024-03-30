@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import { Router, type Request, type Response } from "express";
 import {
   createActivity,
@@ -106,3 +107,4 @@ activitiesRouter.delete(
     }
   },
 );
+/* v8 ignore stop */

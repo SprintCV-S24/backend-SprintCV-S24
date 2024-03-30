@@ -4,3 +4,4 @@ dist/
 *.env
 config/serviceAccountKey.json
 node_modules
+coverage
