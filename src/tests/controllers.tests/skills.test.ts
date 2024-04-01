@@ -14,6 +14,15 @@ describe("Skills controller tests", () => {
   beforeEach(async () => dbConnect());
   afterEach(async () => dbDisconnect());
 
+	test("Errors throw correctly", async () => {
+		await expect(createSkill({} as SkillsType)).rejects.toThrowError("failed");
+		await expect(getAllSkills({} as string)).rejects.toThrowError();
+		await expect(getSkillById({} as string, {} as string)).rejects.toThrowError();
+		await expect(updateSkill({} as string, {} as string, {} as SkillsType)).rejects.toThrowError();
+		await expect(deleteSkill({} as string, {} as string)).rejects.toThrowError();
+		await expect(deleteSkill("1234", "65f2268e3dc262b1277ba0e5")).rejects.toThrowError();
+	});
+
   test("Adds and retrieves an skills", async () => {
     await createSkill(skillsDummyData1 as SkillsType);
     const returnedSkills = await getAllSkills(skillsDummyData1.user);

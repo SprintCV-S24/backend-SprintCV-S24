@@ -1,3 +1,6 @@
+/* v8 ignore start */
+//folder has not yet been implemented
+
 //mongoose object for defining structure of all the documents in a mongodb collection
 import mongoose from "mongoose";
 
@@ -19,3 +22,5 @@ const Folder = new Schema<folderType>({
 });
 
 export const FolderModel = mongoose.model("Folder", Folder);
+
+/* v8 ignore stop */

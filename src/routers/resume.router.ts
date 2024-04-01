@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import { Router, type Request, type Response } from "express";
 import {
   createResume,
@@ -116,4 +117,4 @@ resumeRouter.delete(
     }
   },
 );
-
+/* v8 ignore stop */

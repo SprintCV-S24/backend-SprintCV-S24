@@ -13,6 +13,15 @@ import { describe, test, expect, beforeEach, afterEach } from "vitest";
 describe("Project controller tests", () => {
   beforeEach(async () => dbConnect());
   afterEach(async () => dbDisconnect());
+	
+	test("Errors throw correctly", async () => {
+		await expect(createProject({} as ProjectType)).rejects.toThrowError("failed");
+		await expect(getAllProjects({} as string)).rejects.toThrowError();
+		await expect(getProjectById({} as string, {} as string)).rejects.toThrowError();
+		await expect(updateProject({} as string, {} as string, {} as ProjectType)).rejects.toThrowError();
+		await expect(deleteProject({} as string, {} as string)).rejects.toThrowError();
+		await expect(deleteProject("1234", "65f2268e3dc262b1277ba0e5")).rejects.toThrowError();
+	});
 
   test("Adds and retrieves an project", async () => {
     await createProject(projectDummyData1 as ProjectType);

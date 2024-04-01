@@ -14,6 +14,15 @@ describe("Education controller tests", () => {
   beforeEach(async () => dbConnect());
   afterEach(async () => dbDisconnect());
 
+	test("Errors throw correctly", async () => {
+		await expect(createEducation({} as EducationType)).rejects.toThrowError("failed");
+		await expect(getAllEducation({} as string)).rejects.toThrowError();
+		await expect(getEducationById({} as string, {} as string)).rejects.toThrowError();
+		await expect(updateEducation({} as string, {} as string, {} as EducationType)).rejects.toThrowError();
+		await expect(deleteEducation({} as string, {} as string)).rejects.toThrowError();
+		await expect(deleteEducation("1234", "65f2268e3dc262b1277ba0e5")).rejects.toThrowError();
+	});
+
   test("Adds and retrieves an education", async () => {
     await createEducation(educationDummyData1 as EducationType);
     const returnedEducation = await getAllEducation(educationDummyData1.user);

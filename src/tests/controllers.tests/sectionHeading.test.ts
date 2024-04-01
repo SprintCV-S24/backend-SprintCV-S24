@@ -14,6 +14,15 @@ describe("SectionHeadings controller tests", () => {
   beforeEach(async () => dbConnect());
   afterEach(async () => dbDisconnect());
 
+	test("Errors throw correctly", async () => {
+		await expect(createSectionHeading({} as SectionHeadingType)).rejects.toThrowError("failed");
+		await expect(getAllSectionHeadings({} as string)).rejects.toThrowError();
+		await expect(getSectionHeadingById({} as string, {} as string)).rejects.toThrowError();
+		await expect(updateSectionHeading({} as string, {} as string, {} as SectionHeadingType)).rejects.toThrowError();
+		await expect(deleteSectionHeading({} as string, {} as string)).rejects.toThrowError();
+		await expect(deleteSectionHeading("1234", "65f2268e3dc262b1277ba0e5")).rejects.toThrowError();
+	});
+
   test("Adds and retrieves an sectionHeadings", async () => {
     await createSectionHeading(sectionHeadingDummyData1 as SectionHeadingType);
     const returnedSectionHeadings = await getAllSectionHeadings(sectionHeadingDummyData1.user);

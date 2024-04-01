@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 import cors from "cors";
 import morgan from "morgan";
 import helmet from "helmet";
-import { exampleRoute } from "./routers/exampleRoute";
 import { router } from "./routers/root.router";
 import { verifyToken } from "./middlewares/verifyToken";
 import { notFound, errorHandler } from "./middlewares/errors";
@@ -26,7 +25,6 @@ app.use(helmet());
  * Use the verifyToken to protect all the routes that require authentication
  */
 app.use("/api", verifyToken, router);
-app.use("/example", verifyToken, exampleRoute);
 
 // Default route: Unprotected
 app.get("/", (_req: Request, res: Response) => {

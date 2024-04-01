@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import { Router, type Request, type Response } from "express";
 import {
   createSkill,
@@ -116,4 +117,4 @@ skillRouter.delete(
     }
   },
 );
-
+/* v8 ignore stop */

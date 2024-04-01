@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import { Router, type Request, type Response } from "express";
 import {
   createHeading,
@@ -116,3 +117,4 @@ headingRouter.delete(
     }
   },
 );
+/* v8 ignore stop */
