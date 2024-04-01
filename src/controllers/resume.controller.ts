@@ -1,6 +1,8 @@
 import { ResumeModel, type resumeType } from "../models/resume.model";
 import { HttpError, HttpStatus, checkMongooseErrors } from "../utils/errors";
 import { checkDuplicateItemName } from "../utils/checkDuplicates";
+import { FolderModel } from "../models/folder.model";
+import mongoose from "mongoose";
 
 export const createResume = async (resumesFields: resumeType) => {
   try {
@@ -113,6 +115,10 @@ export const updateResume = async (
 
 export const deleteResume = async (user: string, resumeId: string) => {
   try {
+    await FolderModel.updateMany(
+      { resumeIds: new mongoose.Types.ObjectId(resumeId) },
+      { $pull: { resumeIds: new mongoose.Types.ObjectId(resumeId) } }
+    );
     const deletedResume = await ResumeModel.findOneAndDelete({
       _id: resumeId,
       user: user,

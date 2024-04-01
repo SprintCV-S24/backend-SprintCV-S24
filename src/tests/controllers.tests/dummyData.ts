@@ -69,3 +69,10 @@ export const sectionHeadingDummyData1 = {
 	itemName: "sectionHeadingItem1",
   title: "test section heading",
 }
+
+export const folderDummyData1 = {
+	user: "test",
+	itemName: "FolderItem1",
+  resumeIds: [new mongoose.Types.ObjectId("65e4f54db1e12e776e01cf31")],
+  folderIds: [new mongoose.Types.ObjectId("75e4f54db1e12e776e01cf31")],
+}

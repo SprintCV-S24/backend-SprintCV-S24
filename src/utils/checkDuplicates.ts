@@ -6,6 +6,8 @@ import { HeadingModel } from "../models/heading.model";
 import { ProjectModel } from "../models/project.model";
 import { SectionHeadingModel } from "../models/sectionHeading.model";
 import { SkillsModel } from "../models/skills.model";
+import { FolderModel } from "../models/folder.model";
+import { ResumeModel } from "../models/resume.model";
 
 export const checkDuplicateItemName = async (value: string, excludedId: string | null = null): Promise<boolean> => {
   const field = "itemName";
@@ -17,6 +19,8 @@ export const checkDuplicateItemName = async (value: string, excludedId: string |
     ProjectModel,
     SectionHeadingModel,
     SkillsModel,
+    FolderModel,
+    ResumeModel,
   ];
 
   // Check each model for the count of documents with the specified itemName value
