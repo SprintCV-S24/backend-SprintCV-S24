@@ -9,6 +9,8 @@ import {
 } from "../controllers/project.controller";
 import { HttpError, HttpStatus } from "../utils/errors";
 import { type ProjectType } from "../models/project.model";
+import { generateAndUpload } from "../controllers/latexPdfs.controller";
+import { resumeItemTypes, BaseItem } from "../models/itemTypes";
 
 export const projectRouter = Router();
 
@@ -19,7 +21,9 @@ projectRouter.post(
   async (req: Request<any, any, ProjectType>, res: Response) => {
     try {
       const project = await createProject(req.body);
-      res.status(HttpStatus.OK).json(project);
+			const projectDoc = project.toObject() as ProjectType;
+      await generateAndUpload({...projectDoc, type: resumeItemTypes.PROJECT} as BaseItem);
+      res.status(HttpStatus.OK).json(projectDoc);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
         res.status(err.errorCode).json({ error: err.message });

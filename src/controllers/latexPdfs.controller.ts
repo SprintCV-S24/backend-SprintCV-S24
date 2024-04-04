@@ -7,6 +7,14 @@ import {
 } from "@aws-sdk/client-s3";
 import { Readable } from "stream";
 import { type Response } from "express";
+import { generateLatex } from "../utils/latexString";
+import { resumeItemTypes, BaseItem } from "../models/itemTypes";
+
+export const generateAndUpload = async (item: BaseItem) => {
+	const latexCode = generateLatex(item);
+	const pdfBuffer = await latexToPdf(latexCode);
+	await uploadPdfToS3(`${item.user}/${item._id}`, pdfBuffer);
+}
 
 export const latexToPdf = async (latexCode: string) => {
   const formData = new FormData();

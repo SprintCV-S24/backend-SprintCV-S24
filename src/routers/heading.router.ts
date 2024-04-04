@@ -9,6 +9,8 @@ import {
 } from "../controllers/heading.controller";
 import { HttpError, HttpStatus } from "../utils/errors";
 import { type HeadingType } from "../models/heading.model";
+import { generateAndUpload } from "../controllers/latexPdfs.controller";
+import { resumeItemTypes, BaseItem } from "../models/itemTypes";
 
 export const headingRouter = Router();
 
@@ -19,7 +21,9 @@ headingRouter.post(
   async (req: Request<any, any, HeadingType>, res: Response) => {
     try {
       const heading = await createHeading(req.body);
-      res.status(HttpStatus.OK).json(heading);
+			const headingDoc = heading.toObject() as HeadingType;
+      await generateAndUpload({...headingDoc, type: resumeItemTypes.HEADING} as BaseItem);
+      res.status(HttpStatus.OK).json(headingDoc);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
         res.status(err.errorCode).json({ error: err.message });

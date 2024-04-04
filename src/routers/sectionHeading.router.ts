@@ -9,6 +9,8 @@ import {
 } from "../controllers/sectionHeading.controller";
 import { HttpError, HttpStatus } from "../utils/errors";
 import { type SectionHeadingType } from "../models/sectionHeading.model";
+import { generateAndUpload } from "../controllers/latexPdfs.controller";
+import { resumeItemTypes, BaseItem } from "../models/itemTypes";
 
 export const sectionHeadingRouter = Router();
 
@@ -19,7 +21,9 @@ sectionHeadingRouter.post(
   async (req: Request<any, any, SectionHeadingType>, res: Response) => {
     try {
       const sectionHeading = await createSectionHeading(req.body);
-      res.status(HttpStatus.OK).json(sectionHeading);
+			const sectionHeadingDoc = sectionHeading.toObject() as SectionHeadingType;
+      await generateAndUpload({...sectionHeadingDoc, type: resumeItemTypes.SECTIONHEADING} as BaseItem);
+      res.status(HttpStatus.OK).json(sectionHeadingDoc);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
         res.status(err.errorCode).json({ error: err.message });

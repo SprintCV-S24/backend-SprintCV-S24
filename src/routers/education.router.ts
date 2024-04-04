@@ -9,6 +9,8 @@ import {
 } from "../controllers/education.controller";
 import { HttpError, HttpStatus } from "../utils/errors";
 import { type EducationType } from "../models/education.model";
+import { generateAndUpload } from "../controllers/latexPdfs.controller";
+import { resumeItemTypes, BaseItem } from "../models/itemTypes";
 
 export const educationRouter = Router();
 
@@ -19,7 +21,9 @@ educationRouter.post(
   async (req: Request<any, any, EducationType>, res: Response) => {
     try {
       const education = await createEducation(req.body);
-      res.status(HttpStatus.OK).json(education);
+			const educationDoc = education.toObject() as EducationType;
+      await generateAndUpload({...educationDoc, type: resumeItemTypes.EDUCATION} as BaseItem);
+      res.status(HttpStatus.OK).json(educationDoc);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
         res.status(err.errorCode).json({ error: err.message });

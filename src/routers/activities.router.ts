@@ -9,6 +9,8 @@ import {
 } from "../controllers/activities.controller";
 import { HttpError, HttpStatus } from "../utils/errors";
 import { type ActivitiesType } from "../models/activities.model";
+import { generateAndUpload } from "../controllers/latexPdfs.controller";
+import { resumeItemTypes, BaseItem } from "../models/itemTypes";
 
 export const activitiesRouter = Router();
 
@@ -19,8 +21,11 @@ activitiesRouter.post(
   async (req: Request<any, any, ActivitiesType>, res: Response) => {
     try {
       const activity = await createActivity(req.body);
-      res.status(HttpStatus.OK).json(activity);
+			const activityDoc = activity.toObject() as ActivitiesType;
+      await generateAndUpload({...activityDoc, type: resumeItemTypes.ACTIVITY} as BaseItem);
+      res.status(HttpStatus.OK).json(activityDoc);
     } catch (err: unknown) {
+			console.log("err:", err);
       if (err instanceof HttpError) {
         res.status(err.errorCode).json({ error: err.message });
       } else {
@@ -56,7 +61,10 @@ activitiesRouter.get(
   "/:activityId",
   async (req: Request<any, any, ActivitiesType>, res: Response) => {
     try {
-      const activity = await getActivityById(req.body.user, req.params.activityId);
+      const activity = await getActivityById(
+        req.body.user,
+        req.params.activityId,
+      );
       res.status(HttpStatus.OK).json(activity);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
@@ -75,7 +83,11 @@ activitiesRouter.put(
   "/:activityId",
   async (req: Request<any, any, ActivitiesType>, res: Response) => {
     try {
-      const activity = await updateActivity(req.body.user, req.params.activityId, req.body);
+      const activity = await updateActivity(
+        req.body.user,
+        req.params.activityId,
+        req.body,
+      );
       res.status(HttpStatus.OK).json(activity);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
@@ -94,7 +106,10 @@ activitiesRouter.delete(
   "/:activityId",
   async (req: Request<any, any, ActivitiesType>, res: Response) => {
     try {
-      const activity = await deleteActivity(req.body.user, req.params.activityId);
+      const activity = await deleteActivity(
+        req.body.user,
+        req.params.activityId,
+      );
       res.status(HttpStatus.OK).json(activity);
     } catch (err: unknown) {
       if (err instanceof HttpError) {

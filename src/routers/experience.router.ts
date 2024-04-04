@@ -9,6 +9,8 @@ import {
 } from "../controllers/experience.controller";
 import { HttpError, HttpStatus } from "../utils/errors";
 import { type ExperienceType } from "../models/experience.model";
+import { generateAndUpload } from "../controllers/latexPdfs.controller";
+import { resumeItemTypes, BaseItem } from "../models/itemTypes";
 
 export const experienceRouter = Router();
 
@@ -19,7 +21,9 @@ experienceRouter.post(
   async (req: Request<any, any, ExperienceType>, res: Response) => {
     try {
       const experience = await createExperience(req.body);
-      res.status(HttpStatus.OK).json(experience);
+			const experienceDoc = experience.toObject() as ExperienceType;
+      await generateAndUpload({...experienceDoc, type: resumeItemTypes.EXPERIENCE} as BaseItem);
+      res.status(HttpStatus.OK).json(experienceDoc);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
         res.status(err.errorCode).json({ error: err.message });

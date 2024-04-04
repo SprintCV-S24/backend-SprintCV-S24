@@ -9,6 +9,9 @@ import {
 } from "../controllers/skills.controller";
 import { HttpError, HttpStatus } from "../utils/errors";
 import { type SkillsType } from "../models/skills.model";
+import { generateAndUpload } from "../controllers/latexPdfs.controller";
+import { resumeItemTypes, BaseItem } from "../models/itemTypes";
+import { S } from "vitest/dist/reporters-P7C2ytIv";
 
 export const skillRouter = Router();
 
@@ -19,7 +22,9 @@ skillRouter.post(
   async (req: Request<any, any, SkillsType>, res: Response) => {
     try {
       const skill = await createSkill(req.body);
-      res.status(HttpStatus.OK).json(skill);
+			const skillDoc = skill.toObject() as SkillsType;
+      await generateAndUpload({...skillDoc, type: resumeItemTypes.SKILL} as BaseItem);
+      res.status(HttpStatus.OK).json(skillDoc);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
         res.status(err.errorCode).json({ error: err.message });
