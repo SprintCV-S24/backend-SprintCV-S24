@@ -1,6 +1,6 @@
 import { Router, type Request, type Response } from "express";
 import { HttpError, HttpStatus } from "../utils/errors";
-import { latexToPdf } from "../controllers/latexPdfs.controller";
+import { latexToPdf, uploadPdfToS3 } from "../controllers/latexPdfs.controller";
 
 export const pdfRouter = Router();
 
