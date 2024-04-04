@@ -21,8 +21,11 @@ headingRouter.post(
   async (req: Request<any, any, HeadingType>, res: Response) => {
     try {
       const heading = await createHeading(req.body);
-			const headingDoc = heading.toObject() as HeadingType;
-      await generateAndUpload({...headingDoc, type: resumeItemTypes.HEADING} as BaseItem);
+      const headingDoc = heading.toObject() as HeadingType;
+      await generateAndUpload({
+        ...headingDoc,
+        type: resumeItemTypes.HEADING,
+      } as BaseItem);
       res.status(HttpStatus.OK).json(headingDoc);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
@@ -60,10 +63,7 @@ headingRouter.get(
   "/:headingId",
   async (req: Request<any, any, HeadingType>, res: Response) => {
     try {
-      const heading = await getHeadingById(
-        req.body.user,
-        req.params.headingId,
-      );
+      const heading = await getHeadingById(req.body.user, req.params.headingId);
       res.status(HttpStatus.OK).json(heading);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
@@ -87,6 +87,23 @@ headingRouter.put(
         req.params.headingId,
         req.body,
       );
+
+      const fieldsRequiringRerender = [
+        "name",
+		"items",
+      ];
+      const needsRerender = Object.keys(req.body).some((key) =>
+        fieldsRequiringRerender.includes(key),
+      );
+      //a field has been updated that will change the item image
+      if (needsRerender) {
+        const headingDoc = heading.toObject() as HeadingType;
+        await generateAndUpload({
+          ...headingDoc,
+          type: resumeItemTypes.HEADING,
+        } as BaseItem);
+      }
+
       res.status(HttpStatus.OK).json(heading);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
@@ -105,10 +122,7 @@ headingRouter.delete(
   "/:headingId",
   async (req: Request<any, any, HeadingType>, res: Response) => {
     try {
-      const heading = await deleteHeading(
-        req.body.user,
-        req.params.headingId,
-      );
+      const heading = await deleteHeading(req.body.user, req.params.headingId);
       res.status(HttpStatus.OK).json(heading);
     } catch (err: unknown) {
       if (err instanceof HttpError) {

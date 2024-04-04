@@ -21,8 +21,11 @@ experienceRouter.post(
   async (req: Request<any, any, ExperienceType>, res: Response) => {
     try {
       const experience = await createExperience(req.body);
-			const experienceDoc = experience.toObject() as ExperienceType;
-      await generateAndUpload({...experienceDoc, type: resumeItemTypes.EXPERIENCE} as BaseItem);
+      const experienceDoc = experience.toObject() as ExperienceType;
+      await generateAndUpload({
+        ...experienceDoc,
+        type: resumeItemTypes.EXPERIENCE,
+      } as BaseItem);
       res.status(HttpStatus.OK).json(experienceDoc);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
@@ -87,6 +90,26 @@ experienceRouter.put(
         req.params.experienceId,
         req.body,
       );
+
+      const fieldsRequiringRerender = [
+        "bullets",
+        "title",
+        "subtitle",
+        "year",
+        "location",
+      ];
+      const needsRerender = Object.keys(req.body).some((key) =>
+        fieldsRequiringRerender.includes(key),
+      );
+      //a field has been updated that will change the item image
+      if (needsRerender) {
+        const experienceDoc = experience.toObject() as ExperienceType;
+        await generateAndUpload({
+          ...experienceDoc,
+          type: resumeItemTypes.EXPERIENCE,
+        } as BaseItem);
+      }
+
       res.status(HttpStatus.OK).json(experience);
     } catch (err: unknown) {
       if (err instanceof HttpError) {

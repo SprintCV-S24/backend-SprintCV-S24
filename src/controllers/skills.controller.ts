@@ -6,12 +6,11 @@ import { checkDuplicateItemName } from "../utils/checkDuplicates";
 
 export const createSkill = async (skillsFields: SkillsType) => {
   try {
-		if(await checkDuplicateItemName(skillsFields.user, skillsFields.itemName)){
-			throw new HttpError(
-				HttpStatus.BAD_REQUEST,
-				"Duplicate item name",
-			)
-		}
+    if (
+      await checkDuplicateItemName(skillsFields.user, skillsFields.itemName)
+    ) {
+      throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
+    }
 
     const newSkills = new SkillsModel(skillsFields);
     await newSkills.save();
@@ -32,7 +31,7 @@ export const createSkill = async (skillsFields: SkillsType) => {
 };
 
 export const getAllSkills = async (user: string) => {
-	try {
+  try {
     const skills = await SkillsModel.find({ user: user });
     return skills;
   } catch (err: unknown) {
@@ -49,7 +48,7 @@ export const getAllSkills = async (user: string) => {
       { cause: err },
     );
   }
-}
+};
 
 export const getSkillById = async (user: string, skillId: string) => {
   try {
@@ -76,7 +75,7 @@ export const getSkillById = async (user: string, skillId: string) => {
 
 export const updateSkill = async (
   user: string,
-	skillId: string,
+  skillId: string,
   skillsFields: SkillsType,
 ) => {
   try {
@@ -87,7 +86,14 @@ export const updateSkill = async (
       );
     }
 
-		if (skillsFields.itemName != null && await checkDuplicateItemName(skillsFields.user, skillsFields.itemName, skillId)) {
+    if (
+      skillsFields.itemName != null &&
+      (await checkDuplicateItemName(
+        skillsFields.user,
+        skillsFields.itemName,
+        skillId,
+      ))
+    ) {
       throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
     }
 
@@ -96,6 +102,11 @@ export const updateSkill = async (
       { $set: skillsFields }, // Update operation
       { new: true, runValidators: true }, // Options: return the updated document and run schema validators
     );
+
+    if (updatedSkill == null) {
+      throw new HttpError(HttpStatus.NOT_FOUND, "Skill does not exist");
+    }
+
     return updatedSkill;
   } catch (err: unknown) {
     //rethrow any errors as HttpErrors
@@ -115,10 +126,10 @@ export const updateSkill = async (
 
 export const deleteSkill = async (user: string, skillId: string) => {
   try {
-		await ResumeModel.updateMany(
-			{ itemIds: new mongoose.Types.ObjectId(skillId) },
-			{ $pull: { itemIds: new mongoose.Types.ObjectId(skillId) } }
-		);
+    await ResumeModel.updateMany(
+      { itemIds: new mongoose.Types.ObjectId(skillId) },
+      { $pull: { itemIds: new mongoose.Types.ObjectId(skillId) } },
+    );
 
     const deletedSkill = await SkillsModel.findOneAndDelete({
       _id: skillId,

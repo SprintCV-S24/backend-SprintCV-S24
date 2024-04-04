@@ -21,8 +21,11 @@ educationRouter.post(
   async (req: Request<any, any, EducationType>, res: Response) => {
     try {
       const education = await createEducation(req.body);
-			const educationDoc = education.toObject() as EducationType;
-      await generateAndUpload({...educationDoc, type: resumeItemTypes.EDUCATION} as BaseItem);
+      const educationDoc = education.toObject() as EducationType;
+      await generateAndUpload({
+        ...educationDoc,
+        type: resumeItemTypes.EDUCATION,
+      } as BaseItem);
       res.status(HttpStatus.OK).json(educationDoc);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
@@ -87,6 +90,26 @@ educationRouter.put(
         req.params.educationId,
         req.body,
       );
+
+      const fieldsRequiringRerender = [
+        "bullets",
+        "title",
+        "subtitle",
+        "year",
+        "location",
+      ];
+      const needsRerender = Object.keys(req.body).some((key) =>
+        fieldsRequiringRerender.includes(key),
+      );
+      //a field has been updated that will change the item image
+      if (needsRerender) {
+        const educationDoc = education.toObject() as EducationType;
+        await generateAndUpload({
+          ...educationDoc,
+          type: resumeItemTypes.EDUCATION,
+        } as BaseItem);
+      }
+
       res.status(HttpStatus.OK).json(education);
     } catch (err: unknown) {
       if (err instanceof HttpError) {

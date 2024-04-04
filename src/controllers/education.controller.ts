@@ -6,7 +6,12 @@ import { checkDuplicateItemName } from "../utils/checkDuplicates";
 
 export const createEducation = async (educationFields: EducationType) => {
   try {
-    if (await checkDuplicateItemName(educationFields.user, educationFields.itemName)) {
+    if (
+      await checkDuplicateItemName(
+        educationFields.user,
+        educationFields.itemName,
+      )
+    ) {
       throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
     }
 
@@ -73,7 +78,7 @@ export const getEducationById = async (user: string, educationId: string) => {
 
 export const updateEducation = async (
   user: string,
-	educationId: string,
+  educationId: string,
   educationFields: EducationType,
 ) => {
   try {
@@ -84,7 +89,14 @@ export const updateEducation = async (
       );
     }
 
-		if (educationFields.itemName != null && await checkDuplicateItemName(educationFields.user, educationFields.itemName, educationId)) {
+    if (
+      educationFields.itemName != null &&
+      (await checkDuplicateItemName(
+        educationFields.user,
+        educationFields.itemName,
+        educationId,
+      ))
+    ) {
       throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
     }
 
@@ -93,6 +105,11 @@ export const updateEducation = async (
       { $set: educationFields }, // Update operation
       { new: true, runValidators: true }, // Options: return the updated document and run schema validators
     );
+
+    if (updatedEducation == null) {
+      throw new HttpError(HttpStatus.NOT_FOUND, "Education does not exist");
+    }
+
     return updatedEducation;
   } catch (err: unknown) {
     //rethrow any errors as HttpErrors
@@ -112,10 +129,10 @@ export const updateEducation = async (
 
 export const deleteEducation = async (user: string, educationId: string) => {
   try {
-		await ResumeModel.updateMany(
-			{ itemIds: new mongoose.Types.ObjectId(educationId) },
-			{ $pull: { itemIds: new mongoose.Types.ObjectId(educationId) } }
-		);
+    await ResumeModel.updateMany(
+      { itemIds: new mongoose.Types.ObjectId(educationId) },
+      { $pull: { itemIds: new mongoose.Types.ObjectId(educationId) } },
+    );
 
     const deletedEducation = await EducationModel.findOneAndDelete({
       _id: educationId,

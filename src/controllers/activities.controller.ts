@@ -9,7 +9,12 @@ import { checkDuplicateItemName } from "../utils/checkDuplicates";
 
 export const createActivity = async (activitiesFields: ActivitiesType) => {
   try {
-    if (await checkDuplicateItemName(activitiesFields.user, activitiesFields.itemName)) {
+    if (
+      await checkDuplicateItemName(
+        activitiesFields.user,
+        activitiesFields.itemName,
+      )
+    ) {
       throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
     }
 
@@ -76,7 +81,7 @@ export const getActivityById = async (user: string, activityId: string) => {
 
 export const updateActivity = async (
   user: string,
-	activityId: string,
+  activityId: string,
   activitiesFields: ActivitiesType,
 ) => {
   try {
@@ -87,7 +92,14 @@ export const updateActivity = async (
       );
     }
 
-		if (activitiesFields.itemName != null && await checkDuplicateItemName(activitiesFields.user, activitiesFields.itemName, activityId)) {
+    if (
+      activitiesFields.itemName != null &&
+      (await checkDuplicateItemName(
+        activitiesFields.user,
+        activitiesFields.itemName,
+        activityId,
+      ))
+    ) {
       throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
     }
 
@@ -96,6 +108,11 @@ export const updateActivity = async (
       { $set: activitiesFields }, // Update operation
       { new: true, runValidators: true }, // Options: return the updated document and run schema validators
     );
+
+    if (updatedActivity == null) {
+      throw new HttpError(HttpStatus.NOT_FOUND, "Activity does not exist");
+    }
+
     return updatedActivity;
   } catch (err: unknown) {
     //rethrow any errors as HttpErrors
@@ -115,10 +132,10 @@ export const updateActivity = async (
 
 export const deleteActivity = async (user: string, activityId: string) => {
   try {
-		await ResumeModel.updateMany(
-			{ itemIds: new mongoose.Types.ObjectId(activityId) },
-			{ $pull: { itemIds: new mongoose.Types.ObjectId(activityId) } }
-		);
+    await ResumeModel.updateMany(
+      { itemIds: new mongoose.Types.ObjectId(activityId) },
+      { $pull: { itemIds: new mongoose.Types.ObjectId(activityId) } },
+    );
 
     const deletedActivity = await ActivitiesModel.findOneAndDelete({
       _id: activityId,

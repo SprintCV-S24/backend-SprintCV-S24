@@ -21,8 +21,11 @@ projectRouter.post(
   async (req: Request<any, any, ProjectType>, res: Response) => {
     try {
       const project = await createProject(req.body);
-			const projectDoc = project.toObject() as ProjectType;
-      await generateAndUpload({...projectDoc, type: resumeItemTypes.PROJECT} as BaseItem);
+      const projectDoc = project.toObject() as ProjectType;
+      await generateAndUpload({
+        ...projectDoc,
+        type: resumeItemTypes.PROJECT,
+      } as BaseItem);
       res.status(HttpStatus.OK).json(projectDoc);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
@@ -60,10 +63,7 @@ projectRouter.get(
   "/:projectId",
   async (req: Request<any, any, ProjectType>, res: Response) => {
     try {
-      const project = await getProjectById(
-        req.body.user,
-        req.params.projectId,
-      );
+      const project = await getProjectById(req.body.user, req.params.projectId);
       res.status(HttpStatus.OK).json(project);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
@@ -87,6 +87,25 @@ projectRouter.put(
         req.params.projectId,
         req.body,
       );
+
+      const fieldsRequiringRerender = [
+        "bullets",
+        "title",
+        "technologies",
+        "year",
+      ];
+      const needsRerender = Object.keys(req.body).some((key) =>
+        fieldsRequiringRerender.includes(key),
+      );
+      //a field has been updated that will change the item image
+      if (needsRerender) {
+        const projectDoc = project.toObject() as ProjectType;
+        await generateAndUpload({
+          ...projectDoc,
+          type: resumeItemTypes.PROJECT,
+        } as BaseItem);
+      }
+
       res.status(HttpStatus.OK).json(project);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
@@ -105,10 +124,7 @@ projectRouter.delete(
   "/:projectId",
   async (req: Request<any, any, ProjectType>, res: Response) => {
     try {
-      const project = await deleteProject(
-        req.body.user,
-        req.params.projectId,
-      );
+      const project = await deleteProject(req.body.user, req.params.projectId);
       res.status(HttpStatus.OK).json(project);
     } catch (err: unknown) {
       if (err instanceof HttpError) {

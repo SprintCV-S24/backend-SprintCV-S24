@@ -6,7 +6,9 @@ import { checkDuplicateItemName } from "../utils/checkDuplicates";
 
 export const createProject = async (projectFields: ProjectType) => {
   try {
-    if (await checkDuplicateItemName(projectFields.user, projectFields.itemName)) {
+    if (
+      await checkDuplicateItemName(projectFields.user, projectFields.itemName)
+    ) {
       throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
     }
 
@@ -84,7 +86,10 @@ export const updateProject = async (
       );
     }
 
-    if (projectFields.itemName != null && await checkDuplicateItemName(projectFields.itemName, projectId)) {
+    if (
+      projectFields.itemName != null &&
+      (await checkDuplicateItemName(projectFields.itemName, projectId))
+    ) {
       throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
     }
 
@@ -93,6 +98,11 @@ export const updateProject = async (
       { $set: projectFields }, // Update operation
       { new: true, runValidators: true }, // Options: return the updated document and run schema validators
     );
+
+    if (updatedProject == null) {
+      throw new HttpError(HttpStatus.NOT_FOUND, "Project does not exist");
+    }
+
     return updatedProject;
   } catch (err: unknown) {
     //rethrow any errors as HttpErrors

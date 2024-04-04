@@ -22,8 +22,11 @@ skillRouter.post(
   async (req: Request<any, any, SkillsType>, res: Response) => {
     try {
       const skill = await createSkill(req.body);
-			const skillDoc = skill.toObject() as SkillsType;
-      await generateAndUpload({...skillDoc, type: resumeItemTypes.SKILL} as BaseItem);
+      const skillDoc = skill.toObject() as SkillsType;
+      await generateAndUpload({
+        ...skillDoc,
+        type: resumeItemTypes.SKILL,
+      } as BaseItem);
       res.status(HttpStatus.OK).json(skillDoc);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
@@ -61,10 +64,7 @@ skillRouter.get(
   "/:skillId",
   async (req: Request<any, any, SkillsType>, res: Response) => {
     try {
-      const skill = await getSkillById(
-        req.body.user,
-        req.params.skillId,
-      );
+      const skill = await getSkillById(req.body.user, req.params.skillId);
       res.status(HttpStatus.OK).json(skill);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
@@ -88,6 +88,23 @@ skillRouter.put(
         req.params.skillId,
         req.body,
       );
+
+      const fieldsRequiringRerender = [
+        "title",
+        "description",
+      ];
+      const needsRerender = Object.keys(req.body).some((key) =>
+        fieldsRequiringRerender.includes(key),
+      );
+      //a field has been updated that will change the item image
+      if (needsRerender) {
+        const skillDoc = skill.toObject() as SkillsType;
+        await generateAndUpload({
+          ...skillDoc,
+          type: resumeItemTypes.SKILL,
+        } as BaseItem);
+      }
+	  
       res.status(HttpStatus.OK).json(skill);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
@@ -106,10 +123,7 @@ skillRouter.delete(
   "/:skillId",
   async (req: Request<any, any, SkillsType>, res: Response) => {
     try {
-      const skill = await deleteSkill(
-        req.body.user,
-        req.params.skillId,
-      );
+      const skill = await deleteSkill(req.body.user, req.params.skillId);
       res.status(HttpStatus.OK).json(skill);
     } catch (err: unknown) {
       if (err instanceof HttpError) {

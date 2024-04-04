@@ -1,17 +1,24 @@
-import { SectionHeadingModel, type SectionHeadingType } from "../models/sectionHeading.model";
+import {
+  SectionHeadingModel,
+  type SectionHeadingType,
+} from "../models/sectionHeading.model";
 import { ResumeModel } from "../models/resume.model";
 import mongoose from "mongoose";
 import { HttpError, HttpStatus, checkMongooseErrors } from "../utils/errors";
 import { checkDuplicateItemName } from "../utils/checkDuplicates";
 
-export const createSectionHeading = async (sectionHeadingsFields: SectionHeadingType) => {
+export const createSectionHeading = async (
+  sectionHeadingsFields: SectionHeadingType,
+) => {
   try {
-		if(await checkDuplicateItemName(sectionHeadingsFields.user, sectionHeadingsFields.itemName)){
-			throw new HttpError(
-				HttpStatus.BAD_REQUEST,
-				"Duplicate item name",
-			)
-		}
+    if (
+      await checkDuplicateItemName(
+        sectionHeadingsFields.user,
+        sectionHeadingsFields.itemName,
+      )
+    ) {
+      throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
+    }
 
     const newSectionHeadings = new SectionHeadingModel(sectionHeadingsFields);
     await newSectionHeadings.save();
@@ -32,7 +39,7 @@ export const createSectionHeading = async (sectionHeadingsFields: SectionHeading
 };
 
 export const getAllSectionHeadings = async (user: string) => {
-	try {
+  try {
     const sectionHeadings = await SectionHeadingModel.find({ user: user });
     return sectionHeadings;
   } catch (err: unknown) {
@@ -49,9 +56,12 @@ export const getAllSectionHeadings = async (user: string) => {
       { cause: err },
     );
   }
-}
+};
 
-export const getSectionHeadingById = async (user: string, sectionHeadingId: string) => {
+export const getSectionHeadingById = async (
+  user: string,
+  sectionHeadingId: string,
+) => {
   try {
     const sectionHeading = await SectionHeadingModel.findOne({
       user: user,
@@ -76,7 +86,7 @@ export const getSectionHeadingById = async (user: string, sectionHeadingId: stri
 
 export const updateSectionHeading = async (
   user: string,
-	sectionHeadingId: string,
+  sectionHeadingId: string,
   sectionHeadingsFields: SectionHeadingType,
 ) => {
   try {
@@ -87,7 +97,14 @@ export const updateSectionHeading = async (
       );
     }
 
-		if (sectionHeadingsFields.itemName != null &&await checkDuplicateItemName(sectionHeadingsFields.user, sectionHeadingsFields.itemName, sectionHeadingId)) {
+    if (
+      sectionHeadingsFields.itemName != null &&
+      (await checkDuplicateItemName(
+        sectionHeadingsFields.user,
+        sectionHeadingsFields.itemName,
+        sectionHeadingId,
+      ))
+    ) {
       throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
     }
 
@@ -96,6 +113,11 @@ export const updateSectionHeading = async (
       { $set: sectionHeadingsFields }, // Update operation
       { new: true, runValidators: true }, // Options: return the updated document and run schema validators
     );
+
+    if (updatedSectionHeading == null) {
+      throw new HttpError(HttpStatus.NOT_FOUND, "Section heading does not exist");
+    }
+
     return updatedSectionHeading;
   } catch (err: unknown) {
     //rethrow any errors as HttpErrors
@@ -113,12 +135,15 @@ export const updateSectionHeading = async (
   }
 };
 
-export const deleteSectionHeading = async (user: string, sectionHeadingId: string) => {
+export const deleteSectionHeading = async (
+  user: string,
+  sectionHeadingId: string,
+) => {
   try {
-		await ResumeModel.updateMany(
-			{ itemIds: new mongoose.Types.ObjectId(sectionHeadingId) },
-			{ $pull: { itemIds: new mongoose.Types.ObjectId(sectionHeadingId) } }
-		);
+    await ResumeModel.updateMany(
+      { itemIds: new mongoose.Types.ObjectId(sectionHeadingId) },
+      { $pull: { itemIds: new mongoose.Types.ObjectId(sectionHeadingId) } },
+    );
 
     const deletedSectionHeading = await SectionHeadingModel.findOneAndDelete({
       _id: sectionHeadingId,

@@ -21,8 +21,11 @@ sectionHeadingRouter.post(
   async (req: Request<any, any, SectionHeadingType>, res: Response) => {
     try {
       const sectionHeading = await createSectionHeading(req.body);
-			const sectionHeadingDoc = sectionHeading.toObject() as SectionHeadingType;
-      await generateAndUpload({...sectionHeadingDoc, type: resumeItemTypes.SECTIONHEADING} as BaseItem);
+      const sectionHeadingDoc = sectionHeading.toObject() as SectionHeadingType;
+      await generateAndUpload({
+        ...sectionHeadingDoc,
+        type: resumeItemTypes.SECTIONHEADING,
+      } as BaseItem);
       res.status(HttpStatus.OK).json(sectionHeadingDoc);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
@@ -87,6 +90,21 @@ sectionHeadingRouter.put(
         req.params.sectionHeadingId,
         req.body,
       );
+
+      const fieldsRequiringRerender = ["title"];
+      const needsRerender = Object.keys(req.body).some((key) =>
+        fieldsRequiringRerender.includes(key),
+      );
+      //a field has been updated that will change the item image
+      if (needsRerender) {
+        const sectionHeadingDoc =
+          sectionHeading.toObject() as SectionHeadingType;
+        await generateAndUpload({
+          ...sectionHeadingDoc,
+          type: resumeItemTypes.SECTIONHEADING,
+        } as BaseItem);
+      }
+
       res.status(HttpStatus.OK).json(sectionHeading);
     } catch (err: unknown) {
       if (err instanceof HttpError) {

@@ -9,7 +9,12 @@ import { checkDuplicateItemName } from "../utils/checkDuplicates";
 
 export const createExperience = async (experienceFields: ExperienceType) => {
   try {
-    if (await checkDuplicateItemName(experienceFields.user, experienceFields.itemName)) {
+    if (
+      await checkDuplicateItemName(
+        experienceFields.user,
+        experienceFields.itemName,
+      )
+    ) {
       throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
     }
 
@@ -89,7 +94,11 @@ export const updateExperience = async (
 
     if (
       experienceFields.itemName != null &&
-      (await checkDuplicateItemName(experienceFields.user, experienceFields.itemName, experienceId))
+      (await checkDuplicateItemName(
+        experienceFields.user,
+        experienceFields.itemName,
+        experienceId,
+      ))
     ) {
       throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
     }
@@ -99,6 +108,11 @@ export const updateExperience = async (
       { $set: experienceFields }, // Update operation
       { new: true, runValidators: true }, // Options: return the updated document and run schema validators
     );
+
+    if (updatedExperience == null) {
+      throw new HttpError(HttpStatus.NOT_FOUND, "Experience does not exist");
+    }
+
     return updatedExperience;
   } catch (err: unknown) {
     //rethrow any errors as HttpErrors

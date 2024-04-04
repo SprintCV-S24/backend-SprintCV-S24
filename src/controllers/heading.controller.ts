@@ -6,7 +6,9 @@ import { checkDuplicateItemName } from "../utils/checkDuplicates";
 
 export const createHeading = async (headingFields: HeadingType) => {
   try {
-    if (await checkDuplicateItemName(headingFields.user, headingFields.itemName)) {
+    if (
+      await checkDuplicateItemName(headingFields.user, headingFields.itemName)
+    ) {
       throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
     }
 
@@ -86,7 +88,11 @@ export const updateHeading = async (
 
     if (
       headingFields.itemName != null &&
-      (await checkDuplicateItemName(headingFields.user, headingFields.itemName, headingId))
+      (await checkDuplicateItemName(
+        headingFields.user,
+        headingFields.itemName,
+        headingId,
+      ))
     ) {
       throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate item name");
     }
@@ -96,6 +102,11 @@ export const updateHeading = async (
       { $set: headingFields }, // Update operation
       { new: true, runValidators: true }, // Options: return the updated document and run schema validators
     );
+
+    if (updatedHeading == null) {
+      throw new HttpError(HttpStatus.NOT_FOUND, "Heading does not exist");
+    }
+
     return updatedHeading;
   } catch (err: unknown) {
     //rethrow any errors as HttpErrors

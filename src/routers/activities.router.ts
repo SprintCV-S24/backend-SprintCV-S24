@@ -21,11 +21,14 @@ activitiesRouter.post(
   async (req: Request<any, any, ActivitiesType>, res: Response) => {
     try {
       const activity = await createActivity(req.body);
-			const activityDoc = activity.toObject() as ActivitiesType;
-      await generateAndUpload({...activityDoc, type: resumeItemTypes.ACTIVITY} as BaseItem);
+      const activityDoc = activity.toObject() as ActivitiesType;
+      await generateAndUpload({
+        ...activityDoc,
+        type: resumeItemTypes.ACTIVITY,
+      } as BaseItem);
       res.status(HttpStatus.OK).json(activityDoc);
     } catch (err: unknown) {
-			console.log("err:", err);
+      console.log("err:", err);
       if (err instanceof HttpError) {
         res.status(err.errorCode).json({ error: err.message });
       } else {
@@ -88,6 +91,26 @@ activitiesRouter.put(
         req.params.activityId,
         req.body,
       );
+
+      const fieldsRequiringRerender = [
+        "bullets",
+        "title",
+        "subtitle",
+        "year",
+        "location",
+      ];
+      const needsRerender = Object.keys(req.body).some((key) =>
+        fieldsRequiringRerender.includes(key),
+      );
+      //a field has been updated that will change the item image
+      if (needsRerender) {
+        const activityDoc = activity.toObject() as ActivitiesType;
+        await generateAndUpload({
+          ...activityDoc,
+          type: resumeItemTypes.ACTIVITY,
+        } as BaseItem);
+      }
+	  
       res.status(HttpStatus.OK).json(activity);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
