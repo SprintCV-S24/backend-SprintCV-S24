@@ -9,7 +9,7 @@ import {
 } from "../controllers/heading.controller";
 import { HttpError, HttpStatus } from "../utils/errors";
 import { type HeadingType } from "../models/heading.model";
-import { generateAndUpload } from "../controllers/latexPdfs.controller";
+import { generateAndUpload, deletePdfFromS3 } from "../controllers/latexPdfs.controller";
 import { resumeItemTypes, BaseItem } from "../models/itemTypes";
 
 export const headingRouter = Router();
@@ -123,6 +123,7 @@ headingRouter.delete(
   async (req: Request<any, any, HeadingType>, res: Response) => {
     try {
       const heading = await deleteHeading(req.body.user, req.params.headingId);
+	  await deletePdfFromS3(req.body.user, req.params.headingId);
       res.status(HttpStatus.OK).json(heading);
     } catch (err: unknown) {
       if (err instanceof HttpError) {

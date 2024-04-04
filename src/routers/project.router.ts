@@ -9,7 +9,7 @@ import {
 } from "../controllers/project.controller";
 import { HttpError, HttpStatus } from "../utils/errors";
 import { type ProjectType } from "../models/project.model";
-import { generateAndUpload } from "../controllers/latexPdfs.controller";
+import { generateAndUpload, deletePdfFromS3 } from "../controllers/latexPdfs.controller";
 import { resumeItemTypes, BaseItem } from "../models/itemTypes";
 
 export const projectRouter = Router();
@@ -125,6 +125,7 @@ projectRouter.delete(
   async (req: Request<any, any, ProjectType>, res: Response) => {
     try {
       const project = await deleteProject(req.body.user, req.params.projectId);
+	  await deletePdfFromS3(req.body.user, req.params.projectId);
       res.status(HttpStatus.OK).json(project);
     } catch (err: unknown) {
       if (err instanceof HttpError) {

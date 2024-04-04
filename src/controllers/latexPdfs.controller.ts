@@ -4,6 +4,8 @@ import {
   GetObjectCommand,
   HeadObjectCommand,
   PutObjectCommand,
+  ListObjectsV2Command,
+  DeleteObjectsCommand,
 } from "@aws-sdk/client-s3";
 import { Readable } from "stream";
 import { type Response } from "express";
@@ -11,10 +13,10 @@ import { generateLatex } from "../utils/latexString";
 import { resumeItemTypes, BaseItem } from "../models/itemTypes";
 
 export const generateAndUpload = async (item: BaseItem) => {
-	const latexCode = generateLatex(item);
-	const pdfBuffer = await latexToPdf(latexCode);
-	await uploadPdfToS3(`${item.user}/${item._id}`, pdfBuffer);
-}
+  const latexCode = generateLatex(item);
+  const pdfBuffer = await latexToPdf(latexCode);
+  await uploadPdfToS3(item.user, item._id, pdfBuffer);
+};
 
 export const latexToPdf = async (latexCode: string) => {
   const formData = new FormData();
@@ -51,7 +53,11 @@ export const latexToPdf = async (latexCode: string) => {
   return Buffer.from(data);
 };
 
-export const uploadPdfToS3 = async (objectName: string, data: Buffer) => {
+export const uploadPdfToS3 = async (
+  user: string,
+  itemId: string,
+  data: Buffer,
+) => {
   const bucketName = process.env.PDF_BUCKET_NAME;
   if (!bucketName) {
     throw new HttpError(
@@ -59,6 +65,8 @@ export const uploadPdfToS3 = async (objectName: string, data: Buffer) => {
       "No bucket name provided",
     );
   }
+
+  const objectName = `${user}/${itemId}`;
 
   try {
     const uploadParams = {
@@ -71,9 +79,16 @@ export const uploadPdfToS3 = async (objectName: string, data: Buffer) => {
     const result = await s3Client.send(new PutObjectCommand(uploadParams));
     console.log("File uploaded successfully", result);
     return result;
-  } catch (error) {
-    console.error("Error fetching PDF or uploading to S3:", error);
-    throw error;
+  } catch (err) {
+    //rethrow HttpErrors
+    if (err instanceof HttpError) {
+      throw err;
+    }
+    throw new HttpError(
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      "s3 object upload failed",
+      { cause: err },
+    );
   }
 };
 
@@ -99,7 +114,7 @@ export const handlePdfResponse = async (
     // get bare minimum http-header information
     const headResponse = await s3Client.send(new HeadObjectCommand(params));
 
-		//avoid resending images if browser's cached version is up to date
+    //avoid resending images if browser's cached version is up to date
     if (prevEtag && prevEtag == headResponse.ETag) {
       res.status(304).end();
       return;
@@ -126,7 +141,7 @@ export const handlePdfResponse = async (
         "S3 get object response body is null",
       );
     }
-		res.type("application/pdf");
+    res.type("application/pdf");
     stream.on("data", (chunk) => res.write(chunk));
     stream.once("end", () => {
       res.end();
@@ -140,6 +155,67 @@ export const handlePdfResponse = async (
     if (err instanceof HttpError) {
       throw err;
     }
-    throw err;
+    throw new HttpError(
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      "s3 object retrieval failed",
+      { cause: err },
+    );
+  }
+};
+
+export const deletePdfFromS3 = async (user: string, itemId: string) => {
+  try {
+    const bucketName = process.env.PDF_BUCKET_NAME;
+    if (!bucketName) {
+      throw new HttpError(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "No bucket name provided",
+      );
+    }
+
+    //list all w/ user/itemId in case we have multiple images of different templates
+    const listParams = {
+      Bucket: bucketName,
+      Prefix: `${user}/${itemId}`,
+    };
+
+    const listedObjects = await s3Client.send(
+      new ListObjectsV2Command(listParams),
+    );
+
+    if (listedObjects.Contents == null || listedObjects.Contents.length === 0) {
+      throw new HttpError(
+        HttpStatus.NOT_FOUND,
+        "No s3 objects found to delete",
+      );
+    }
+
+    const deleteParams = {
+      Bucket: bucketName,
+      Delete: {
+        Objects: listedObjects.Contents.map(({ Key }) => ({ Key })),
+      },
+    };
+
+    const deleteResult = await s3Client.send(
+      new DeleteObjectsCommand(deleteParams),
+    );
+    console.log("deleteResult:", deleteResult);
+    if (deleteResult.Errors != null) {
+      throw new HttpError(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        `Some objects failed to delete:	${deleteResult.Errors}`,
+      );
+    }
+  } catch (err) {
+    //rethrow HttpErrors
+    if (err instanceof HttpError) {
+      throw err;
+    }
+    throw new HttpError(
+      HttpStatus.INTERNAL_SERVER_ERROR,
+      "S3 object deletion failed",
+      { cause: err },
+    );
   }
 };

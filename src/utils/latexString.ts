@@ -288,7 +288,6 @@ export const generateActivityLatex = (activityObj: ActivitiesType) => {
 };
 
 export const generateActivityLatexHelper = (activityObj: ActivitiesType) => {
-	console.log("activityObj:", activityObj)
   let latexString = `\\resumeSubheading{${sanitize(
     activityObj.title,
   )}}{${sanitize(activityObj.year)}}{${sanitize(

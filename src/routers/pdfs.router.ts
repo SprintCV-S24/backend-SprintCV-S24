@@ -28,7 +28,7 @@ pdfRouter.post(
   async (req: Request<any, any, { latexCode: string }>, res: Response) => {
     try {
       const pdfBinary = await latexToPdf(req.body.latexCode);
-      await uploadPdfToS3("testPdf", pdfBinary);
+      await uploadPdfToS3("", "testPdf", pdfBinary);
       res.status(HttpStatus.OK).send("ok");
     } catch (err: unknown) {
       if (err instanceof HttpError) {

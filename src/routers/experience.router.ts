@@ -9,7 +9,7 @@ import {
 } from "../controllers/experience.controller";
 import { HttpError, HttpStatus } from "../utils/errors";
 import { type ExperienceType } from "../models/experience.model";
-import { generateAndUpload } from "../controllers/latexPdfs.controller";
+import { generateAndUpload, deletePdfFromS3 } from "../controllers/latexPdfs.controller";
 import { resumeItemTypes, BaseItem } from "../models/itemTypes";
 
 export const experienceRouter = Router();
@@ -132,6 +132,7 @@ experienceRouter.delete(
         req.body.user,
         req.params.experienceId,
       );
+	  await deletePdfFromS3(req.body.user, req.params.experienceId);
       res.status(HttpStatus.OK).json(experience);
     } catch (err: unknown) {
       if (err instanceof HttpError) {

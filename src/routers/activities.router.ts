@@ -9,7 +9,7 @@ import {
 } from "../controllers/activities.controller";
 import { HttpError, HttpStatus } from "../utils/errors";
 import { type ActivitiesType } from "../models/activities.model";
-import { generateAndUpload } from "../controllers/latexPdfs.controller";
+import { generateAndUpload, deletePdfFromS3 } from "../controllers/latexPdfs.controller";
 import { resumeItemTypes, BaseItem } from "../models/itemTypes";
 
 export const activitiesRouter = Router();
@@ -110,7 +110,7 @@ activitiesRouter.put(
           type: resumeItemTypes.ACTIVITY,
         } as BaseItem);
       }
-	  
+
       res.status(HttpStatus.OK).json(activity);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
@@ -133,6 +133,7 @@ activitiesRouter.delete(
         req.body.user,
         req.params.activityId,
       );
+	  await deletePdfFromS3(req.body.user, req.params.activityId);
       res.status(HttpStatus.OK).json(activity);
     } catch (err: unknown) {
       if (err instanceof HttpError) {

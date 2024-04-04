@@ -9,9 +9,8 @@ import {
 } from "../controllers/skills.controller";
 import { HttpError, HttpStatus } from "../utils/errors";
 import { type SkillsType } from "../models/skills.model";
-import { generateAndUpload } from "../controllers/latexPdfs.controller";
+import { generateAndUpload, deletePdfFromS3 } from "../controllers/latexPdfs.controller";
 import { resumeItemTypes, BaseItem } from "../models/itemTypes";
-import { S } from "vitest/dist/reporters-P7C2ytIv";
 
 export const skillRouter = Router();
 
@@ -104,7 +103,7 @@ skillRouter.put(
           type: resumeItemTypes.SKILL,
         } as BaseItem);
       }
-	  
+
       res.status(HttpStatus.OK).json(skill);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
@@ -124,6 +123,7 @@ skillRouter.delete(
   async (req: Request<any, any, SkillsType>, res: Response) => {
     try {
       const skill = await deleteSkill(req.body.user, req.params.skillId);
+	  await deletePdfFromS3(req.body.user, req.params.skillId);
       res.status(HttpStatus.OK).json(skill);
     } catch (err: unknown) {
       if (err instanceof HttpError) {

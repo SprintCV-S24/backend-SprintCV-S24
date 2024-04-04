@@ -9,7 +9,7 @@ import {
 } from "../controllers/sectionHeading.controller";
 import { HttpError, HttpStatus } from "../utils/errors";
 import { type SectionHeadingType } from "../models/sectionHeading.model";
-import { generateAndUpload } from "../controllers/latexPdfs.controller";
+import { generateAndUpload, deletePdfFromS3 } from "../controllers/latexPdfs.controller";
 import { resumeItemTypes, BaseItem } from "../models/itemTypes";
 
 export const sectionHeadingRouter = Router();
@@ -127,6 +127,7 @@ sectionHeadingRouter.delete(
         req.body.user,
         req.params.sectionHeadingId,
       );
+	  await deletePdfFromS3(req.body.user, req.params.sectionHeadingId);
       res.status(HttpStatus.OK).json(sectionHeading);
     } catch (err: unknown) {
       if (err instanceof HttpError) {
