@@ -10,7 +10,7 @@ import {
 import { Readable } from "stream";
 import { type Response } from "express";
 import { generateLatex } from "../utils/latexString";
-import { resumeItemTypes, BaseItem } from "../models/itemTypes";
+import { BaseItem } from "../models/itemTypes";
 
 export const generateAndUpload = async (item: BaseItem) => {
   const latexCode = generateLatex(item);
@@ -111,8 +111,21 @@ export const handlePdfResponse = async (
       Key: objectName,
     };
 
-    // get bare minimum http-header information
-    const headResponse = await s3Client.send(new HeadObjectCommand(params));
+    let headResponse;
+    try {
+      // get bare minimum http-header information
+      headResponse = await s3Client.send(new HeadObjectCommand(params));
+    } catch (err) {
+      if (err instanceof Error && err.name == "NotFound") {
+        return { error: "NotFound" };
+      } else {
+        throw new HttpError(
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          "s3 object retrieval failed",
+          { cause: err },
+        );
+      }
+    }
 
     //avoid resending images if browser's cached version is up to date
     if (prevEtag && prevEtag == headResponse.ETag) {
@@ -200,7 +213,6 @@ export const deletePdfFromS3 = async (user: string, itemId: string) => {
     const deleteResult = await s3Client.send(
       new DeleteObjectsCommand(deleteParams),
     );
-    console.log("deleteResult:", deleteResult);
     if (deleteResult.Errors != null) {
       throw new HttpError(
         HttpStatus.INTERNAL_SERVER_ERROR,

@@ -7,6 +7,7 @@ import { SkillsType } from "../models/skills.model";
 import { ActivitiesType } from "../models/activities.model";
 import { SectionHeadingType } from "../models/sectionHeading.model";
 import { BaseItem, resumeItemTypes } from "../models/itemTypes";
+import { HttpError, HttpStatus } from "./errors";
 
 function sanitize(str: string): string {
   const symbolMap: { [key: string]: string } = {
@@ -54,10 +55,10 @@ export const generateHeaderLatex = (activityObj: HeadingType): string => {
     "\\usepackage[top=0in, left=1in, right=1in, bottom=1in]{geometry}",
     "\\usepackage[top=.3in, left=1in, right=1in, bottom=1in]{geometry}",
   );
-	headerLatex = headerLatex.replace(
-		"\\pdfpageheight=\\dimexpr\\ht0+\\dimen0",
-		"\\pdfpageheight=\\dimexpr\\ht0+\\dimen0+.3in"
-	);
+  headerLatex = headerLatex.replace(
+    "\\pdfpageheight=\\dimexpr\\ht0+\\dimen0",
+    "\\pdfpageheight=\\dimexpr\\ht0+\\dimen0+.3in",
+  );
   headerLatex += `\\begin{document}\n`;
 
   headerLatex += generateHeaderLatexHelper(activityObj as HeadingType);
@@ -67,9 +68,7 @@ export const generateHeaderLatex = (activityObj: HeadingType): string => {
   return headerLatex;
 };
 
-export const generateHeaderLatexHelper = (
-  activityObj: HeadingType,
-): string => {
+export const generateHeaderLatexHelper = (activityObj: HeadingType): string => {
   let headerLatex = `\\begin{center}\n`;
   headerLatex += `\\textbf{\\Huge ${sanitize(
     activityObj.name,
@@ -204,9 +203,7 @@ export const generateProjectLatex = (projectObj: ProjectType): string => {
   return latexString;
 };
 
-export const generateProjectLatexHelper = (
-  projectObj: ProjectType,
-): string => {
+export const generateProjectLatexHelper = (projectObj: ProjectType): string => {
   let latexString = "";
 
   // Check if technologies are provided and append them to the title
@@ -323,14 +320,14 @@ export const generateSectionHeadingLatex = (
   activityObj: SectionHeadingType,
 ) => {
   let latexString = getLatexContentSizedPreamble();
-	latexString = latexString.replace(
+  latexString = latexString.replace(
     "\\usepackage[top=0in, left=1in, right=1in, bottom=1in]{geometry}",
     "\\usepackage[top=.05in, left=1in, right=1in, bottom=1in]{geometry}",
   );
-	latexString = latexString.replace(
-		"\\pdfpageheight=\\dimexpr\\ht0+\\dimen0",
-		"\\pdfpageheight=\\dimexpr\\ht0+\\dimen0+.05in"
-	);
+  latexString = latexString.replace(
+    "\\pdfpageheight=\\dimexpr\\ht0+\\dimen0",
+    "\\pdfpageheight=\\dimexpr\\ht0+\\dimen0+.05in",
+  );
 
   latexString += `\\begin{document}`;
 
@@ -373,6 +370,12 @@ export const generateLatex = (object: BaseItem): string => {
 
     case resumeItemTypes.SKILL:
       return generateSkillsLatex(object as SkillsType);
+
+    default:
+      throw new HttpError(
+        HttpStatus.BAD_REQUEST,
+        "Invalid or no item type provided",
+      );
   }
 };
 
@@ -410,7 +413,9 @@ export const generateFullResume = (resumeItems: BaseItem[]): string => {
         latexString += generateHeaderLatexHelper(item as HeadingType);
         break;
       case resumeItemTypes.SECTIONHEADING:
-        latexString += `\\section{${sanitize((item as SectionHeadingType).title)}}\n`;
+        latexString += `\\section{${sanitize(
+          (item as SectionHeadingType).title,
+        )}}\n`;
         break;
       case resumeItemTypes.EDUCATION:
         startList();
