@@ -77,7 +77,6 @@ export const uploadPdfToS3 = async (
     };
 
     const result = await s3Client.send(new PutObjectCommand(uploadParams));
-    console.log("File uploaded successfully", result);
     return result;
   } catch (err) {
     //rethrow HttpErrors
