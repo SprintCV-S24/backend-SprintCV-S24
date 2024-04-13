@@ -19,4 +19,4 @@ router.use("/headings", headingRouter);
 router.use("/projects", projectRouter);
 router.use("/resumes", resumeRouter);
 router.use("/sectionHeadings", sectionHeadingRouter);
-router.use("/sectionHeadings", duplicateRouter);
+router.use("/duplicateNames", duplicateRouter);
