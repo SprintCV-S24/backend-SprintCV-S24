@@ -83,15 +83,12 @@ export const updateResume = async (
       );
     }
 
-    if (
-      resumesFields.itemName != null &&
-      (await checkDuplicateResumeName(
+    if (resumesFields.itemName != null) {
+      resumesFields.itemName = await generateUniqueResumeName(
         resumesFields.user,
         resumesFields.itemName,
-        resumeId,
-      ))
-    ) {
-      throw new HttpError(HttpStatus.BAD_REQUEST, "Duplicate resume name");
+		resumeId,
+      );
     }
 
     const updatedResume = await ResumeModel.findOneAndUpdate(
@@ -148,14 +145,15 @@ export const deleteResume = async (user: string, resumeId: string) => {
 export const generateUniqueResumeName = async (
   user: string,
   origName: string,
+  excludedId: string | null = null,
 ) => {
-  if (!(await checkDuplicateResumeName(user, origName))) {
+  if (!(await checkDuplicateResumeName(user, origName, excludedId))) {
     return origName;
   }
 
   let counter = 1;
   let newName = `${origName} (${counter})`;
-  while (await checkDuplicateResumeName(user, newName)) {
+  while (await checkDuplicateResumeName(user, newName, excludedId)) {
     counter++;
     newName = `${origName} (${counter})`;
   }
