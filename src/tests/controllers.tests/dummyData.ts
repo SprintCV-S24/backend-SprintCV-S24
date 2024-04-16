@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { templates } from "../../models/resume.model";
 
 export const activityDummyData1 = {
   user: "test",
@@ -61,7 +62,7 @@ export const resumeDummyData1 = {
 	user: "test",
 	itemName: "resumeItem1",
   itemIds: [new mongoose.Types.ObjectId("65e4f54db1e12e776e01cf31")],
-  templateId: new mongoose.Types.ObjectId("75e4f54db1e12e776e01cf31"),
+  templateId: templates.BLUE,
 }
 
 export const sectionHeadingDummyData1 = {

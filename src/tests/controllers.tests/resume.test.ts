@@ -1,5 +1,5 @@
 import { dbConnect, dbDisconnect } from "../dbHandler";
-import { type resumeType } from "../../models/resume.model";
+import { templates, type resumeType } from "../../models/resume.model";
 import { type ActivitiesType } from "../../models/activities.model";
 import { resumeDummyData1, activityDummyData1 } from "./dummyData";
 import {
@@ -85,7 +85,7 @@ describe("Resume controller tests", () => {
 		const newActivity = await createActivity(activityDummyData1 as ActivitiesType);
 		let resumeDummyData2 = structuredClone(resumeDummyData1);
 		resumeDummyData2.itemIds = [newActivity._id];
-		resumeDummyData2.templateId = new mongoose.Types.ObjectId("75e4f54db1e12e776e01cf31");
+		resumeDummyData2.templateId = templates.JAKES
 		
 
 		const origResume = await createResume(resumeDummyData2 as resumeType);
